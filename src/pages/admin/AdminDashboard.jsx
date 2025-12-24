@@ -113,52 +113,64 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 mesh-gradient opacity-50 pointer-events-none" />
+      <div className="orb orb-primary w-[500px] h-[500px] -top-64 -right-64 opacity-20" />
+      <div className="orb orb-accent w-80 h-80 bottom-0 -left-40 opacity-15" />
+      
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">CloudHost Admin Dashboard</h1>
-          <p className="text-muted-foreground">
+      <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
+          <h1 className="text-3xl font-bold text-gradient-primary">CloudHost Admin Dashboard</h1>
+          <p className="text-muted-foreground mt-1">
             Overview of platform performance and metrics
           </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => navigate('/admin/notifications')}>
+        </motion.div>
+        <motion.div 
+          className="flex gap-3"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
+          <Button variant="glass" onClick={() => navigate('/admin/notifications')}>
             <Mail className="w-4 h-4 mr-2" />
             Notification Logs
           </Button>
-          <Button onClick={() => navigate('/admin/orders')}>
+          <Button variant="glow" onClick={() => navigate('/admin/orders')}>
             <Activity className="w-4 h-4 mr-2" />
             View All Orders
           </Button>
-        </div>
+        </motion.div>
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {stats.map((stat, index) => (
           <motion.div
             key={stat.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
           >
-            <Card className="border-border/50 hover:border-primary/30 transition-all">
-              <CardContent className="pt-6">
+            <Card variant="stat" className="card-hover group overflow-visible">
+              <CardContent className="pt-6 pb-5">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{stat.title}</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
-                    <div className={`flex items-center gap-1 mt-1 text-sm ${
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground font-medium">{stat.title}</p>
+                    <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                    <div className={`flex items-center gap-1.5 text-sm font-semibold ${
                       stat.trend === 'up' ? 'text-success' : 'text-destructive'
                     }`}>
-                      {stat.trend === 'up' ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                      {stat.trend === 'up' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
                       <span>{stat.change}</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">{stat.subtitle}</p>
                   </div>
-                  <div className={`p-2.5 rounded-lg bg-${stat.color}/10`}>
-                    <stat.icon className={`w-5 h-5 text-${stat.color}`} />
+                  <div className={`p-3 rounded-xl bg-${stat.color}/15 border border-${stat.color}/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                    <stat.icon className={`w-6 h-6 text-${stat.color}`} />
                   </div>
                 </div>
               </CardContent>
@@ -168,18 +180,20 @@ const AdminDashboard = () => {
       </div>
 
       {/* Quick Stats Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div className="relative grid grid-cols-2 sm:grid-cols-5 gap-4">
         {quickStats.map((stat, index) => (
           <motion.div
             key={stat.label}
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 + index * 0.05 }}
+            transition={{ delay: 0.3 + index * 0.05, duration: 0.4 }}
           >
-            <Card className="border-border/50">
+            <Card variant="glass" className="group hover:border-primary/30 transition-all duration-300">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                  <div className="p-2 rounded-lg bg-secondary/50 group-hover:bg-secondary/80 transition-colors">
+                    <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                  </div>
                   <div>
                     <p className="text-xl font-bold">{stat.value.toLocaleString()}</p>
                     <p className="text-xs text-muted-foreground">{stat.label}</p>
