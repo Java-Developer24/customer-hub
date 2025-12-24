@@ -22,6 +22,7 @@ import { useAuth } from '@/contexts/AuthContext';
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
   { icon: Package, label: 'My Products', path: '/dashboard/products' },
+  { icon: ShoppingBag, label: 'Orders', path: '/dashboard/orders' },
   { icon: CreditCard, label: 'Subscriptions', path: '/dashboard/subscriptions' },
   { icon: Bell, label: 'Notifications', path: '/dashboard/notifications' },
   { icon: MessageSquare, label: 'Support', path: '/dashboard/support' },
