@@ -10,24 +10,36 @@ import {
   AlertCircle,
   ArrowUpRight,
   ArrowDownRight,
+  Server,
+  Cloud,
+  Lock,
+  Mail,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
+import { sampleUserProducts, sampleSubscriptions } from '@/data/cloudhost-products';
+
+const iconMap = {
+  'web-hosting': Server,
+  'cloud-servers': Cloud,
+  'ssl-certificates': Lock,
+  'email-hosting': Mail,
+};
 
 const stats = [
   {
-    title: 'Active Products',
-    value: '12',
-    change: '+2',
+    title: 'Active Services',
+    value: sampleUserProducts.filter(p => p.status === 'active').length.toString(),
+    change: '+1',
     trend: 'up',
     icon: Package,
     color: 'primary',
   },
   {
     title: 'Active Subscriptions',
-    value: '8',
+    value: sampleSubscriptions.filter(s => s.status === 'active').length.toString(),
     change: '+1',
     trend: 'up',
     icon: CreditCard,
@@ -35,7 +47,7 @@ const stats = [
   },
   {
     title: 'Monthly Spend',
-    value: '$1,249',
+    value: `$${sampleSubscriptions.filter(s => s.status === 'active').reduce((sum, s) => sum + s.amount, 0).toFixed(2)}`,
     change: '-5%',
     trend: 'down',
     icon: TrendingUp,
@@ -43,7 +55,7 @@ const stats = [
   },
   {
     title: 'Pending Renewals',
-    value: '3',
+    value: sampleUserProducts.filter(p => p.status === 'expiring').length.toString(),
     change: '',
     trend: 'neutral',
     icon: Clock,
@@ -51,17 +63,10 @@ const stats = [
   },
 ];
 
-const recentProducts = [
-  { id: 1, name: 'Enterprise Plan', status: 'active', expiresAt: '2024-03-15', price: '$299/mo' },
-  { id: 2, name: 'API Access Pro', status: 'active', expiresAt: '2024-02-28', price: '$99/mo' },
-  { id: 3, name: 'Analytics Suite', status: 'expiring', expiresAt: '2024-01-20', price: '$149/mo' },
-  { id: 4, name: 'Storage Plus', status: 'suspended', expiresAt: '2024-01-05', price: '$49/mo' },
-];
-
 const notifications = [
-  { id: 1, type: 'warning', message: 'Analytics Suite expires in 5 days', time: '2 hours ago' },
-  { id: 2, type: 'info', message: 'New feature available: Advanced Reports', time: '1 day ago' },
-  { id: 3, type: 'success', message: 'Payment processed successfully', time: '3 days ago' },
+  { id: 1, type: 'warning', message: 'SSL Certificates - Wildcard SSL expires in 5 days', time: '2 hours ago' },
+  { id: 2, type: 'info', message: 'New feature available: CDN Integration', time: '1 day ago' },
+  { id: 3, type: 'success', message: 'Payment processed successfully for Cloud Servers', time: '3 days ago' },
 ];
 
 const UserDashboard = () => {
@@ -155,30 +160,33 @@ const UserDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {recentProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Package className="w-5 h-5 text-primary" />
+                {sampleUserProducts.map((product) => {
+                  const ProductIcon = iconMap[product.productId] || Package;
+                  return (
+                    <div
+                      key={product.id}
+                      className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <ProductIcon className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">{product.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Expires: {product.expiresAt}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-foreground">{product.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Expires: {product.expiresAt}
-                        </p>
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline" className={getStatusBadge(product.status)}>
+                          {product.status}
+                        </Badge>
+                        <span className="text-sm font-medium text-foreground">${product.price}/{product.period}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Badge variant="outline" className={getStatusBadge(product.status)}>
-                        {product.status}
-                      </Badge>
-                      <span className="text-sm font-medium text-foreground">{product.price}</span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

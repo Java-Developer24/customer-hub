@@ -22,75 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-const mockOrders = [
-  {
-    id: 'ORD-2024-001',
-    date: '2024-01-15',
-    status: 'delivered',
-    total: 299.99,
-    items: [
-      { name: 'Premium Web Hosting', quantity: 1, price: 149.99, image: '/placeholder.svg' },
-      { name: 'SSL Certificate', quantity: 1, price: 99.99, image: '/placeholder.svg' },
-      { name: 'Domain Registration', quantity: 1, price: 50.01, image: '/placeholder.svg' }
-    ],
-    payment: { method: 'Credit Card', last4: '4242' },
-    tracking: [
-      { status: 'Order Placed', date: '2024-01-15 10:30', completed: true },
-      { status: 'Payment Confirmed', date: '2024-01-15 10:32', completed: true },
-      { status: 'Processing', date: '2024-01-15 11:00', completed: true },
-      { status: 'Activated', date: '2024-01-15 11:15', completed: true },
-      { status: 'Delivered', date: '2024-01-15 11:20', completed: true }
-    ]
-  },
-  {
-    id: 'ORD-2024-002',
-    date: '2024-01-20',
-    status: 'processing',
-    total: 599.99,
-    items: [
-      { name: 'Cloud VPS Server', quantity: 1, price: 599.99, image: '/placeholder.svg' }
-    ],
-    payment: { method: 'PayPal', last4: null },
-    tracking: [
-      { status: 'Order Placed', date: '2024-01-20 14:00', completed: true },
-      { status: 'Payment Confirmed', date: '2024-01-20 14:05', completed: true },
-      { status: 'Processing', date: '2024-01-20 14:30', completed: true },
-      { status: 'Configuring Server', date: '2024-01-20 15:00', completed: false },
-      { status: 'Ready', date: null, completed: false }
-    ]
-  },
-  {
-    id: 'ORD-2024-003',
-    date: '2024-01-22',
-    status: 'pending',
-    total: 79.99,
-    items: [
-      { name: 'Email Hosting Pro', quantity: 1, price: 79.99, image: '/placeholder.svg' }
-    ],
-    payment: { method: 'Credit Card', last4: '1234' },
-    tracking: [
-      { status: 'Order Placed', date: '2024-01-22 09:00', completed: true },
-      { status: 'Awaiting Payment', date: null, completed: false },
-      { status: 'Processing', date: null, completed: false },
-      { status: 'Activated', date: null, completed: false }
-    ]
-  },
-  {
-    id: 'ORD-2024-004',
-    date: '2024-01-10',
-    status: 'cancelled',
-    total: 199.99,
-    items: [
-      { name: 'Website Builder Pro', quantity: 1, price: 199.99, image: '/placeholder.svg' }
-    ],
-    payment: { method: 'Credit Card', last4: '5678' },
-    tracking: [
-      { status: 'Order Placed', date: '2024-01-10 16:00', completed: true },
-      { status: 'Cancelled by User', date: '2024-01-10 16:30', completed: true }
-    ]
-  }
-];
+import { sampleUserOrders } from '@/data/cloudhost-products';
 
 const statusConfig = {
   delivered: { label: 'Delivered', color: 'bg-success/20 text-success', icon: CheckCircle },
@@ -300,7 +232,7 @@ const UserOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const filteredOrders = mockOrders.filter(order => {
+  const filteredOrders = sampleUserOrders.filter(order => {
     const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.items.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
@@ -313,10 +245,10 @@ const UserOrders = () => {
   };
 
   const stats = {
-    total: mockOrders.length,
-    delivered: mockOrders.filter(o => o.status === 'delivered').length,
-    processing: mockOrders.filter(o => o.status === 'processing').length,
-    pending: mockOrders.filter(o => o.status === 'pending').length
+    total: sampleUserOrders.length,
+    delivered: sampleUserOrders.filter(o => o.status === 'delivered').length,
+    processing: sampleUserOrders.filter(o => o.status === 'processing').length,
+    pending: sampleUserOrders.filter(o => o.status === 'pending').length
   };
 
   return (

@@ -9,18 +9,31 @@ import {
   CheckCircle2,
   AlertCircle,
   Clock,
+  Server,
+  Cloud,
+  Globe,
+  Mail,
+  Lock,
+  Palette,
+  Search,
+  Monitor,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { sampleUserProducts } from '@/data/cloudhost-products';
 
-const products = [
-  { id: 1, name: 'Enterprise Plan', description: 'Full-featured enterprise solution with unlimited access', price: 299, period: 'monthly', status: 'active', expiresAt: '2024-03-15', features: ['Unlimited users', 'API access', '24/7 support', 'Custom integrations'] },
-  { id: 2, name: 'API Access Pro', description: 'Advanced API access with higher rate limits', price: 99, period: 'monthly', status: 'active', expiresAt: '2024-02-28', features: ['100k requests/month', 'Priority support', 'Webhooks'] },
-  { id: 3, name: 'Analytics Suite', description: 'Comprehensive analytics and reporting dashboard', price: 149, period: 'monthly', status: 'expiring', expiresAt: '2024-01-20', features: ['Real-time analytics', 'Custom reports', 'Export data'] },
-  { id: 4, name: 'Storage Plus', description: 'Extended cloud storage solution', price: 49, period: 'monthly', status: 'suspended', expiresAt: '2024-01-05', features: ['500GB storage', 'Auto backup', 'CDN'] },
-];
+const iconMap = {
+  'web-hosting': Server,
+  'cloud-servers': Cloud,
+  'domain-names': Globe,
+  'email-hosting': Mail,
+  'ssl-certificates': Lock,
+  'website-builder': Palette,
+  'seo-tools': Search,
+  'vps-hosting': Monitor,
+};
 
 const UserProducts = () => {
   const { toast } = useToast();
@@ -61,9 +74,10 @@ const UserProducts = () => {
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {products.map((product, index) => {
+        {sampleUserProducts.map((product, index) => {
           const statusInfo = getStatusBadge(product.status);
           const StatusIcon = statusInfo.icon;
+          const ProductIcon = iconMap[product.productId] || Package;
           
           return (
             <motion.div
@@ -79,7 +93,7 @@ const UserProducts = () => {
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                         product.status === 'suspended' ? 'bg-muted' : 'bg-primary/10'
                       }`}>
-                        <Package className={`w-6 h-6 ${
+                        <ProductIcon className={`w-6 h-6 ${
                           product.status === 'suspended' ? 'text-muted-foreground' : 'text-primary'
                         }`} />
                       </div>
