@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { ImpersonationProvider } from "./contexts/ImpersonationContext";
 import ImpersonationBanner from "./components/admin/ImpersonationBanner";
+import ImpersonationActivityPanel from "./components/admin/ImpersonationActivityPanel";
 import Chatbot from "./components/Chatbot";
 
 // Marketplace Pages
@@ -150,6 +151,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <ImpersonationBanner />
+              <ImpersonationActivityPanel />
               <AppRoutes />
               <Chatbot />
             </TooltipProvider>
