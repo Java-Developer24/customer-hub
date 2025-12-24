@@ -85,7 +85,7 @@ const UserSubscriptions = () => {
               <div>
                 <p className="text-sm text-muted-foreground">Active Subscriptions</p>
                 <p className="text-2xl font-bold text-success">
-                  {subscriptions.filter(s => s.status === 'active').length}
+                  {sampleSubscriptions.filter(s => s.status === 'active').length}
                 </p>
               </div>
               <CheckCircle2 className="w-8 h-8 text-success/50" />

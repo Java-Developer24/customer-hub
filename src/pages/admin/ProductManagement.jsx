@@ -11,6 +11,12 @@ import {
   DollarSign,
   ToggleLeft,
   ToggleRight,
+  Server,
+  Cloud,
+  Mail,
+  Lock,
+  Palette,
+  Monitor,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,20 +47,23 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { adminProducts } from '@/data/cloudhost-products';
 
-const initialProducts = [
-  { id: 1, name: 'Enterprise Plan', description: 'Full-featured enterprise solution', price: 299, period: 'monthly', status: 'active', regions: ['North America', 'Europe'], customers: 145 },
-  { id: 2, name: 'API Access Pro', description: 'Advanced API access with higher limits', price: 99, period: 'monthly', status: 'active', regions: ['Global'], customers: 89 },
-  { id: 3, name: 'Analytics Suite', description: 'Comprehensive analytics dashboard', price: 149, period: 'monthly', status: 'active', regions: ['North America', 'Europe', 'Asia Pacific'], customers: 234 },
-  { id: 4, name: 'Storage Plus', description: 'Extended cloud storage solution', price: 49, period: 'monthly', status: 'inactive', regions: ['North America'], customers: 56 },
-  { id: 5, name: 'Security Shield', description: 'Advanced security features', price: 199, period: 'monthly', status: 'active', regions: ['Global'], customers: 178 },
-  { id: 6, name: 'Starter Pack', description: 'Perfect for small teams', price: 29, period: 'monthly', status: 'active', regions: ['Global'], customers: 412 },
-];
+const regions = ['North America', 'Europe', 'Asia Pacific', 'Latin America', 'Middle East', 'Africa', 'Global'];
 
-const regions = ['North America', 'Europe', 'Asia Pacific', 'Latin America', 'Middle East', 'Africa'];
+const iconMap = {
+  'web-hosting': Server,
+  'cloud-servers': Cloud,
+  'domain-names': Globe,
+  'email-hosting': Mail,
+  'ssl-certificates': Lock,
+  'website-builder': Palette,
+  'seo-tools': Search,
+  'vps-hosting': Monitor,
+};
 
 const ProductManagement = () => {
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState(adminProducts);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -65,6 +74,7 @@ const ProductManagement = () => {
     period: 'monthly',
     regions: [],
     status: 'active',
+    productId: '',
   });
   const { toast } = useToast();
 
@@ -195,7 +205,10 @@ const ProductManagement = () => {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Package className="w-5 h-5 text-primary" />
+                      {(() => {
+                        const IconComponent = iconMap[product.productId] || Package;
+                        return <IconComponent className="w-5 h-5 text-primary" />;
+                      })()}
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground">{product.name}</h3>
