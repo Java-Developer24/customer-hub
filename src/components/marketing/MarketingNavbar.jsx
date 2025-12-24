@@ -53,7 +53,7 @@ const MarketingNavbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, isAdmin } = useAuth();
-  const { cartItems } = useCart();
+  const { items, itemCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -61,7 +61,7 @@ const MarketingNavbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const cartCount = itemCount || 0;
 
   return (
     <header 
