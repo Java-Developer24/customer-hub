@@ -91,50 +91,64 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Background orbs */}
+      <div className="orb orb-primary w-96 h-96 -top-48 -left-48 opacity-30" />
+      <div className="orb orb-accent w-64 h-64 top-1/2 -right-32 opacity-20" />
+      
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-3xl font-bold text-gradient-primary">
             Welcome back, {user?.name || 'User'}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mt-1">
             Here's an overview of your CloudHost account
           </p>
-        </div>
-        <Button variant="outline" className="w-fit">
-          <Bell className="w-4 h-4 mr-2" />
-          View All Notifications
-        </Button>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <Button variant="glass" className="w-fit gap-2">
+            <Bell className="w-4 h-4" />
+            View All Notifications
+          </Button>
+        </motion.div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {stats.map((stat, index) => (
           <motion.div
             key={stat.title}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
           >
-            <Card className="glass card-hover">
-              <CardContent className="pt-6">
+            <Card variant="stat" className="card-hover group">
+              <CardContent className="pt-6 pb-5">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{stat.title}</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground font-medium">{stat.title}</p>
+                    <p className="text-3xl font-bold text-foreground">{stat.value}</p>
                     {stat.change && (
-                      <div className={`flex items-center gap-1 mt-1 text-sm ${
+                      <div className={`flex items-center gap-1.5 text-sm font-medium ${
                         stat.trend === 'up' ? 'text-success' : stat.trend === 'down' ? 'text-destructive' : 'text-muted-foreground'
                       }`}>
-                        {stat.trend === 'up' && <ArrowUpRight className="w-3 h-3" />}
-                        {stat.trend === 'down' && <ArrowDownRight className="w-3 h-3" />}
+                        {stat.trend === 'up' && <ArrowUpRight className="w-4 h-4" />}
+                        {stat.trend === 'down' && <ArrowDownRight className="w-4 h-4" />}
                         <span>{stat.change}</span>
                       </div>
                     )}
                   </div>
-                  <div className={`p-2.5 rounded-lg bg-${stat.color}/10`}>
-                    <stat.icon className={`w-5 h-5 text-${stat.color}`} />
+                  <div className={`p-3 rounded-xl bg-${stat.color}/15 border border-${stat.color}/20 group-hover:scale-110 transition-transform duration-300`}>
+                    <stat.icon className={`w-6 h-6 text-${stat.color}`} />
                   </div>
                 </div>
               </CardContent>
@@ -146,45 +160,48 @@ const UserDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Products List */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
           className="lg:col-span-2"
         >
-          <Card className="glass">
-            <CardHeader className="flex flex-row items-center justify-between">
+          <Card variant="glass" className="overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-border/30 bg-secondary/20">
               <CardTitle className="text-lg font-semibold">Your Products</CardTitle>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
                 View All
               </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="space-y-3">
-                {sampleUserProducts.map((product) => {
+                {sampleUserProducts.map((product, idx) => {
                   const ProductIcon = iconMap[product.productId] || Package;
                   return (
-                    <div
+                    <motion.div
                       key={product.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.5 + idx * 0.1 }}
+                      className="flex items-center justify-between p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 border border-border/20 hover:border-primary/30 transition-all duration-300 group cursor-pointer"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <ProductIcon className="w-5 h-5 text-primary" />
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-primary/20">
+                          <ProductIcon className="w-6 h-6 text-primary" />
                         </div>
                         <div>
-                          <p className="font-medium text-foreground">{product.name}</p>
+                          <p className="font-semibold text-foreground">{product.name}</p>
                           <p className="text-sm text-muted-foreground">
                             Expires: {product.expiresAt}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <Badge variant="outline" className={getStatusBadge(product.status)}>
+                      <div className="flex items-center gap-4">
+                        <Badge variant="outline" className={`${getStatusBadge(product.status)} font-medium`}>
                           {product.status}
                         </Badge>
-                        <span className="text-sm font-medium text-foreground">${product.price}/{product.period}</span>
+                        <span className="text-sm font-bold text-foreground">${product.price}/{product.period}</span>
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
@@ -194,29 +211,35 @@ const UserDashboard = () => {
 
         {/* Notifications */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <Card className="glass">
-            <CardHeader>
+          <Card variant="glass" className="h-full">
+            <CardHeader className="border-b border-border/30 bg-secondary/20">
               <CardTitle className="text-lg font-semibold">Recent Notifications</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="space-y-4">
-                {notifications.map((notification) => (
-                  <div key={notification.id} className="flex gap-3">
-                    <div className="mt-0.5">
+                {notifications.map((notification, idx) => (
+                  <motion.div 
+                    key={notification.id} 
+                    className="flex gap-3 p-3 rounded-lg hover:bg-secondary/30 transition-colors cursor-pointer group"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 + idx * 0.1 }}
+                  >
+                    <div className="mt-0.5 p-1.5 rounded-lg bg-secondary/50 group-hover:bg-secondary/80 transition-colors">
                       {getNotificationIcon(notification.type)}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-foreground">{notification.message}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
+                      <p className="text-sm text-foreground leading-relaxed">{notification.message}</p>
+                      <p className="text-xs text-muted-foreground mt-1.5">{notification.time}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-              <Button variant="ghost" className="w-full mt-4" size="sm">
+              <Button variant="outline" className="w-full mt-4" size="sm">
                 See All Notifications
               </Button>
             </CardContent>
