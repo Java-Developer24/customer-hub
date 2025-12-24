@@ -10,11 +10,12 @@ import {
   Ticket,
   Settings,
   LogOut,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
   BarChart3,
   Shield,
+  ShoppingCart,
+  CreditCard,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -24,8 +25,10 @@ const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
   { icon: Users, label: 'Customers', path: '/admin/customers' },
   { icon: Package, label: 'Products', path: '/admin/products' },
+  { icon: ShoppingCart, label: 'Orders', path: '/admin/orders' },
+  { icon: CreditCard, label: 'Payments', path: '/admin/payments' },
   { icon: Globe, label: 'Regions', path: '/admin/regions' },
-  { icon: Mail, label: 'Emails', path: '/admin/emails' },
+  { icon: Mail, label: 'Notifications', path: '/admin/notifications' },
   { icon: Ticket, label: 'Tickets', path: '/admin/tickets' },
   { icon: BarChart3, label: 'Analytics', path: '/admin/analytics' },
   { icon: Settings, label: 'Settings', path: '/admin/settings' },
