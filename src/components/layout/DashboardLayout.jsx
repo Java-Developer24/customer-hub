@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import UserSidebar from './UserSidebar';
 import { cn } from '@/lib/utils';
+import { useImpersonation } from '@/contexts/ImpersonationContext';
 
 const DashboardLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const location = useLocation();
+  const { isImpersonating, logPageView, impersonatedCustomer } = useImpersonation();
+
+  // Track page views during impersonation
+  useEffect(() => {
+    if (isImpersonating) {
+      logPageView(location.pathname);
+    }
+  }, [location.pathname, isImpersonating, logPageView]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={cn("min-h-screen bg-background", isImpersonating && "pt-12")}>
       <UserSidebar
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        isImpersonating={isImpersonating}
+        impersonatedCustomer={impersonatedCustomer}
       />
       
       <main

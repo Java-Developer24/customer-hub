@@ -35,20 +35,32 @@ const quickLinks = [
   { icon: ShoppingBag, label: 'Browse Products', path: '/products' },
 ];
 
-const UserSidebar = ({ collapsed, onToggle }) => {
+const UserSidebar = ({ collapsed, onToggle, isImpersonating, impersonatedCustomer }) => {
   const location = useLocation();
   const { user, logout } = useAuth();
+
+  // Use impersonated customer data if impersonating
+  const displayUser = isImpersonating && impersonatedCustomer ? impersonatedCustomer : user;
 
   return (
     <motion.aside
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       className={cn(
-        "fixed left-0 top-0 h-screen bg-sidebar border-r border-sidebar-border z-40 transition-all duration-300",
-        collapsed ? "w-16" : "w-64"
+        "fixed left-0 h-screen bg-sidebar border-r border-sidebar-border z-40 transition-all duration-300",
+        collapsed ? "w-16" : "w-64",
+        isImpersonating ? "top-12" : "top-0"
       )}
     >
       <div className="flex flex-col h-full">
+        {/* Impersonation Indicator */}
+        {isImpersonating && !collapsed && (
+          <div className="px-3 py-2 bg-warning/10 border-b border-warning/20">
+            <p className="text-xs font-medium text-warning">Viewing as:</p>
+            <p className="text-sm font-semibold text-foreground truncate">{displayUser?.name}</p>
+          </div>
+        )}
+
         {/* Logo */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border">
           {!collapsed && (
@@ -107,34 +119,45 @@ const UserSidebar = ({ collapsed, onToggle }) => {
         {/* User Section */}
         <div className="p-3 border-t border-sidebar-border">
           {!collapsed && (
-            <div className="flex items-center gap-3 px-3 py-2 mb-2">
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-sm font-medium text-primary">
-                  {user?.name?.charAt(0) || 'U'}
+            <div className={cn(
+              "flex items-center gap-3 px-3 py-2 mb-2 rounded-lg",
+              isImpersonating && "bg-warning/5 border border-warning/20"
+            )}>
+              <div className={cn(
+                "w-8 h-8 rounded-full flex items-center justify-center",
+                isImpersonating ? "bg-warning/20" : "bg-primary/20"
+              )}>
+                <span className={cn(
+                  "text-sm font-medium",
+                  isImpersonating ? "text-warning" : "text-primary"
+                )}>
+                  {displayUser?.name?.charAt(0) || 'U'}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-sidebar-foreground truncate">
-                  {user?.name || 'User'}
+                  {displayUser?.name || 'User'}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {user?.email || 'user@example.com'}
+                  {displayUser?.email || 'user@example.com'}
                 </p>
               </div>
             </div>
           )}
           
-          <Button
-            variant="ghost"
-            className={cn(
-              "w-full justify-start text-muted-foreground hover:text-destructive",
-              collapsed && "justify-center px-0"
-            )}
-            onClick={logout}
-          >
-            <LogOut className="w-5 h-5" />
-            {!collapsed && <span className="ml-3">Logout</span>}
-          </Button>
+          {!isImpersonating && (
+            <Button
+              variant="ghost"
+              className={cn(
+                "w-full justify-start text-muted-foreground hover:text-destructive",
+                collapsed && "justify-center px-0"
+              )}
+              onClick={logout}
+            >
+              <LogOut className="w-5 h-5" />
+              {!collapsed && <span className="ml-3">Logout</span>}
+            </Button>
+          )}
         </div>
 
         {/* Toggle Button */}
