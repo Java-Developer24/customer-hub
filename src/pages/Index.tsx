@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import { 
@@ -17,15 +17,54 @@ import {
 } from "@/components/ui/accordion";
 import MarketingNavbar from '@/components/marketing/MarketingNavbar';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
+import CookieConsent from '@/components/marketing/CookieConsent';
+import NewsletterPopup from '@/components/marketing/NewsletterPopup';
+
+// Animated Counter Component
+const AnimatedCounter = ({ end, suffix = '', prefix = '', decimals = 0 }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (!isInView || hasAnimated.current) return;
+    hasAnimated.current = true;
+    
+    const duration = 2000;
+    const startTime = Date.now();
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      setCount(end * easeOut);
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setCount(end);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }, [isInView, end]);
+
+  return (
+    <span ref={ref}>
+      {prefix}{decimals > 0 ? count.toFixed(decimals) : Math.floor(count)}{suffix}
+    </span>
+  );
+};
 
 const Index = () => {
   const [isYearly, setIsYearly] = useState(false);
 
   const stats = [
-    { value: '500K+', label: 'Websites Hosted', icon: Globe },
-    { value: '150+', label: 'Countries Served', icon: Users },
-    { value: '4.8/5', label: 'Customer Rating', icon: Star },
-    { value: '99.9%', label: 'Uptime Guarantee', icon: Shield },
+    { value: 500, suffix: 'K+', label: 'Websites Hosted', icon: Globe },
+    { value: 150, suffix: '+', label: 'Countries Served', icon: Users },
+    { value: 4.8, suffix: '/5', label: 'Customer Rating', icon: Star, decimals: 1 },
+    { value: 99.9, suffix: '%', label: 'Uptime Guarantee', icon: Shield, decimals: 1 },
   ];
 
   const productCategories = [
@@ -372,7 +411,13 @@ const Index = () => {
                     <stat.icon className="w-6 h-6 text-primary" />
                   </div>
                 </div>
-                <p className="text-3xl lg:text-4xl font-black text-foreground mb-1">{stat.value}</p>
+                <p className="text-3xl lg:text-4xl font-black text-foreground mb-1">
+                  <AnimatedCounter 
+                    end={stat.value} 
+                    suffix={stat.suffix} 
+                    decimals={stat.decimals || 0}
+                  />
+                </p>
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
               </motion.div>
             ))}
@@ -764,6 +809,8 @@ const Index = () => {
       </section>
 
       <MarketingFooter />
+      <CookieConsent />
+      <NewsletterPopup />
     </div>
   );
 };
