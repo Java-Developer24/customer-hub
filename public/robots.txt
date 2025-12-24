@@ -12,3 +12,1182 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# 🏗️ COMPLETE BACKEND ARCHITECTURE - No Code, Just Info
+
+Got it buddy! Here's the complete architecture, folder structure, endpoints, and packages info.
+
+---
+
+## 📁 FOLDER STRUCTURE
+
+```
+project-root/
+│
+├── server/                          # Backend
+│   ├── config/
+│   │   ├── db.js                   # MongoDB connection
+│   │   ├── email.config.js         # Nodemailer setup
+│   │   ├── sms.config.js           # Twilio setup
+│   │   ├── payment.config.js       # Payment gateway configs
+│   │   ├── gemini.config.js        # Google Gemini AI setup
+│   │   └── cloudinary.config.js    # Image upload (optional)
+│   │
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── OTPLog.js
+│   │   ├── Region.js
+│   │   ├── Product.js
+│   │   ├── Cart.js
+│   │   ├── Order.js
+│   │   ├── Payment.js
+│   │   ├── Subscription.js
+│   │   ├── EmailLog.js
+│   │   ├── SMSLog.js
+│   │   ├── Chat.js
+│   │   ├── Ticket.js
+│   │   ├── Note.js
+│   │   ├── HelpArticle.js
+│   │   ├── FAQ.js
+│   │   ├── ImpersonationLog.js
+│   │   └── AdminActionLog.js
+│   │
+│   ├── controllers/
+│   │   ├── auth.controller.js
+│   │   ├── user.controller.js
+│   │   ├── region.controller.js
+│   │   ├── product.controller.js
+│   │   ├── cart.controller.js
+│   │   ├── order.controller.js
+│   │   ├── payment.controller.js
+│   │   ├── subscription.controller.js
+│   │   ├── admin.controller.js
+│   │   ├── customer.controller.js
+│   │   ├── impersonation.controller.js
+│   │   ├── chat.controller.js
+│   │   ├── ticket.controller.js
+│   │   ├── notification.controller.js
+│   │   ├── analytics.controller.js
+│   │   └── help.controller.js
+│   │
+│   ├── routes/
+│   │   ├── auth.routes.js
+│   │   ├── user.routes.js
+│   │   ├── region.routes.js
+│   │   ├── product.routes.js
+│   │   ├── cart.routes.js
+│   │   ├── order.routes.js
+│   │   ├── payment.routes.js
+│   │   ├── subscription.routes.js
+│   │   ├── admin.routes.js
+│   │   ├── customer.routes.js
+│   │   ├── impersonation.routes.js
+│   │   ├── chat.routes.js
+│   │   ├── ticket.routes.js
+│   │   ├── notification.routes.js
+│   │   ├── analytics.routes.js
+│   │   └── help.routes.js
+│   │
+│   ├── middleware/
+│   │   ├── auth.middleware.js          # JWT verification
+│   │   ├── roleCheck.middleware.js     # Admin/customer check
+│   │   ├── impersonation.middleware.js # Impersonation validation
+│   │   ├── validation.middleware.js    # Input validation
+│   │   ├── errorHandler.middleware.js  # Global error handler
+│   │   ├── rateLimiter.middleware.js   # Rate limiting
+│   │   └── upload.middleware.js        # File upload (Multer)
+│   │
+│   ├── services/
+│   │   ├── email.service.js           # Send emails
+│   │   ├── sms.service.js             # Send SMS
+│   │   ├── payment.service.js         # Payment processing
+│   │   ├── gemini.service.js          # AI chatbot
+│   │   ├── notification.service.js    # Unified notifications
+│   │   ├── pdf.service.js             # Invoice generation
+│   │   ├── csv.service.js             # CSV export
+│   │   └── geoip.service.js           # IP-based region detection
+│   │
+│   ├── utils/
+│   │   ├── generateId.js              # Generate unique IDs
+│   │   ├── jwt.js                     # JWT sign/verify
+│   │   ├── encryption.js              # Password hashing
+│   │   ├── validators.js              # Custom validators
+│   │   ├── dateHelpers.js             # Date calculations
+│   │   └── responseFormatter.js       # Standardized responses
+│   │
+│   ├── jobs/
+│   │   ├── expiryCheck.job.js         # Check expiring subscriptions
+│   │   ├── autoSuspend.job.js         # Auto-suspend expired
+│   │   ├── emailReminder.job.js       # Send reminder emails
+│   │   └── cleanup.job.js             # Database cleanup
+│   │
+│   ├── socket/
+│   │   ├── chat.socket.js             # Socket.io chat handlers
+│   │   └── notification.socket.js     # Real-time notifications
+│   │
+│   ├── templates/
+│   │   ├── emails/
+│   │   │   ├── welcome.html
+│   │   │   ├── otp.html
+│   │   │   ├── passwordReset.html
+│   │   │   ├── orderConfirmation.html
+│   │   │   ├── subscriptionActivation.html
+│   │   │   ├── expiryReminder.html
+│   │   │   ├── suspension.html
+│   │   │   ├── renewal.html
+│   │   │   └── refund.html
+│   │   └── invoices/
+│   │       └── invoice.template.html
+│   │
+│   ├── seeders/                       # Initial data (optional)
+│   │   ├── admin.seeder.js
+│   │   ├── region.seeder.js
+│   │   └── product.seeder.js
+│   │
+│   ├── .env                           # Environment variables
+│   ├── .env.example                   # Example env file
+│   ├── server.js                      # Main entry point
+│   └── package.json
+│
+├── client/                            # Frontend
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── favicon.ico
+│   │   └── images/
+│   │
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── auth/
+│   │   │   │   ├── Login.jsx
+│   │   │   │   ├── Register.jsx
+│   │   │   │   ├── ForgotPassword.jsx
+│   │   │   │   ├── ResetPassword.jsx
+│   │   │   │   └── TwoFactorAuth.jsx
+│   │   │   │
+│   │   │   ├── customer/
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   ├── Products.jsx
+│   │   │   │   ├── ProductDetails.jsx
+│   │   │   │   ├── Cart.jsx
+│   │   │   │   ├── Checkout.jsx
+│   │   │   │   ├── Orders.jsx
+│   │   │   │   ├── OrderDetails.jsx
+│   │   │   │   ├── Subscriptions.jsx
+│   │   │   │   ├── Profile.jsx
+│   │   │   │   └── Support.jsx
+│   │   │   │
+│   │   │   ├── admin/
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   ├── CustomerList.jsx
+│   │   │   │   ├── CustomerDetails.jsx
+│   │   │   │   ├── ProductManagement.jsx
+│   │   │   │   ├── OrderManagement.jsx
+│   │   │   │   ├── RegionManagement.jsx
+│   │   │   │   ├── EmailLogs.jsx
+│   │   │   │   ├── SMSLogs.jsx
+│   │   │   │   ├── TicketManagement.jsx
+│   │   │   │   ├── TicketDetails.jsx
+│   │   │   │   ├── LiveChat.jsx
+│   │   │   │   ├── Analytics.jsx
+│   │   │   │   ├── ImpersonationLogs.jsx
+│   │   │   │   └── ImpersonationModal.jsx
+│   │   │   │
+│   │   │   ├── public/                # Marketing website
+│   │   │   │   ├── Home.jsx
+│   │   │   │   ├── ProductPage.jsx
+│   │   │   │   ├── SolutionsPage.jsx
+│   │   │   │   ├── PricingPage.jsx
+│   │   │   │   ├── AboutPage.jsx
+│   │   │   │   ├── ContactPage.jsx
+│   │   │   │   ├── BlogHome.jsx
+│   │   │   │   ├── BlogPost.jsx
+│   │   │   │   ├── HelpCenter.jsx
+│   │   │   │   └── ResourcesPage.jsx
+│   │   │   │
+│   │   │   ├── shared/
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   ├── Sidebar.jsx
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   ├── Chatbot.jsx
+│   │   │   │   ├── ImpersonationBanner.jsx
+│   │   │   │   ├── Modal.jsx
+│   │   │   │   ├── Table.jsx
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Input.jsx
+│   │   │   │   ├── Card.jsx
+│   │   │   │   ├── Badge.jsx
+│   │   │   │   ├── Loader.jsx
+│   │   │   │   ├── Toast.jsx
+│   │   │   │   └── ProtectedRoute.jsx
+│   │   │   │
+│   │   │   └── payment/
+│   │   │       ├── StripeCheckout.jsx
+│   │   │       ├── PayPalCheckout.jsx
+│   │   │       ├── RazorpayCheckout.jsx
+│   │   │       ├── PaymentSuccess.jsx
+│   │   │       └── PaymentFailed.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── HomePage.jsx
+│   │   │   ├── CustomerPortal.jsx
+│   │   │   ├── AdminPortal.jsx
+│   │   │   └── NotFound.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   ├── AuthContext.js
+│   │   │   ├── CartContext.js
+│   │   │   ├── ImpersonationContext.js
+│   │   │   └── ChatContext.js
+│   │   │
+│   │   ├── hooks/
+│   │   │   ├── useAuth.js
+│   │   │   ├── useCart.js
+│   │   │   ├── useSocket.js
+│   │   │   └── useImpersonation.js
+│   │   │
+│   │   ├── services/
+│   │   │   ├── api.js                 # Axios instance
+│   │   │   ├── auth.service.js
+│   │   │   ├── product.service.js
+│   │   │   ├── cart.service.js
+│   │   │   ├── order.service.js
+│   │   │   ├── subscription.service.js
+│   │   │   ├── payment.service.js
+│   │   │   ├── chat.service.js
+│   │   │   ├── ticket.service.js
+│   │   │   ├── admin.service.js
+│   │   │   └── socket.service.js
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── constants.js
+│   │   │   ├── validators.js
+│   │   │   ├── helpers.js
+│   │   │   └── formatters.js
+│   │   │
+│   │   ├── styles/
+│   │   │   └── global.css
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── routes.jsx
+│   │
+│   ├── .env
+│   ├── .env.example
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   ├── vite.config.js
+│   └── package.json
+│
+├── .gitignore
+└── README.md
+```
+
+---
+
+## 🔌 COMPLETE API ENDPOINTS
+
+### **1. AUTHENTICATION ROUTES** (`/api/auth`)
+
+```
+POST   /api/auth/register              # Register new user
+POST   /api/auth/verify-email          # Verify email with OTP
+POST   /api/auth/resend-otp            # Resend verification OTP
+POST   /api/auth/login                 # Login user
+POST   /api/auth/login/verify-2fa      # Verify 2FA OTP during login
+POST   /api/auth/logout                # Logout user
+POST   /api/auth/refresh-token         # Refresh JWT token
+POST   /api/auth/forgot-password       # Request password reset
+POST   /api/auth/reset-password/:token # Reset password with token
+POST   /api/auth/verify-token          # Verify if token is valid
+```
+
+### **2. USER ROUTES** (`/api/user`) - Protected
+
+```
+GET    /api/user/profile               # Get user profile
+PUT    /api/user/profile               # Update user profile
+PUT    /api/user/change-password       # Change password
+POST   /api/user/enable-2fa            # Enable 2FA
+POST   /api/user/disable-2fa           # Disable 2FA
+POST   /api/user/verify-2fa            # Verify 2FA setup
+GET    /api/user/email-logs            # Get user's email logs
+GET    /api/user/sms-logs              # Get user's SMS logs
+DELETE /api/user/account               # Delete account
+```
+
+### **3. REGION ROUTES** (`/api/regions`)
+
+```
+GET    /api/regions                    # Get all active regions (public)
+GET    /api/regions/:id                # Get single region (public)
+
+# Admin only:
+POST   /api/regions                    # Create region
+PUT    /api/regions/:id                # Update region
+DELETE /api/regions/:id                # Delete region
+PUT    /api/regions/:id/restrictions   # Update product restrictions
+```
+
+### **4. PRODUCT ROUTES** (`/api/products`)
+
+```
+# Public routes:
+GET    /api/products                   # Get all active products (with filters)
+GET    /api/products/:id               # Get single product details
+GET    /api/products/category/:category # Get products by category
+GET    /api/products/search            # Search products
+
+# Admin only:
+POST   /api/products                   # Create product
+PUT    /api/products/:id               # Update product
+DELETE /api/products/:id               # Delete product
+PUT    /api/products/:id/toggle-status # Enable/disable product
+POST   /api/products/:id/upload-image  # Upload product image
+```
+
+### **5. CART ROUTES** (`/api/cart`) - Protected (Customer)
+
+```
+GET    /api/cart                       # Get user's cart
+POST   /api/cart/add                   # Add item to cart
+PUT    /api/cart/update/:itemId        # Update cart item
+DELETE /api/cart/remove/:itemId        # Remove cart item
+DELETE /api/cart/clear                 # Clear entire cart
+GET    /api/cart/count                 # Get cart items count
+```
+
+### **6. ORDER ROUTES** (`/api/orders`)
+
+```
+# Customer routes (protected):
+GET    /api/orders                     # Get user's orders
+GET    /api/orders/:orderId            # Get single order details
+GET    /api/orders/:orderId/invoice    # Download invoice PDF
+POST   /api/orders/create              # Create order (from cart)
+
+# Admin routes:
+GET    /api/orders/all                 # Get all orders (with filters)
+PUT    /api/orders/:orderId/status     # Update order status
+POST   /api/orders/:orderId/refund     # Process refund
+GET    /api/orders/export              # Export orders to CSV
+POST   /api/orders/manual              # Create manual order
+```
+
+### **7. PAYMENT ROUTES** (`/api/payment`)
+
+```
+POST   /api/payment/create-intent           # Create payment intent
+POST   /api/payment/stripe/checkout         # Stripe checkout
+POST   /api/payment/paypal/create-order     # PayPal create order
+POST   /api/payment/paypal/capture          # PayPal capture
+POST   /api/payment/razorpay/create-order   # Razorpay order
+POST   /api/payment/razorpay/verify         # Razorpay verify
+
+# Webhooks:
+POST   /api/payment/webhook/stripe          # Stripe webhook
+POST   /api/payment/webhook/paypal          # PayPal webhook
+POST   /api/payment/webhook/razorpay        # Razorpay webhook
+
+# History:
+GET    /api/payment/history                 # Get payment history (customer)
+GET    /api/payment/all                     # Get all payments (admin)
+```
+
+### **8. SUBSCRIPTION ROUTES** (`/api/subscriptions`)
+
+```
+# Customer routes (protected):
+GET    /api/subscriptions                    # Get user's subscriptions
+GET    /api/subscriptions/:id                # Get single subscription
+POST   /api/subscriptions/:id/renew          # Renew subscription
+PUT    /api/subscriptions/:id/toggle-autorenew # Toggle auto-renew
+POST   /api/subscriptions/:id/cancel         # Cancel subscription
+GET    /api/subscriptions/:id/history        # Get subscription history
+
+# Admin routes:
+GET    /api/subscriptions/all                # Get all subscriptions (filters)
+PUT    /api/subscriptions/:id/suspend        # Manually suspend
+PUT    /api/subscriptions/:id/unsuspend      # Manually unsuspend
+PUT    /api/subscriptions/:id/extend         # Extend expiry date
+GET    /api/subscriptions/expiring           # Get expiring soon (7 days)
+```
+
+### **9. ADMIN ROUTES** (`/api/admin`)
+
+```
+# Dashboard:
+GET    /api/admin/dashboard/stats            # Get dashboard statistics
+GET    /api/admin/dashboard/revenue          # Get revenue data
+GET    /api/admin/dashboard/charts           # Get chart data
+
+# Customer Management:
+GET    /api/admin/customers                  # Get all customers (filters)
+GET    /api/admin/customers/:id              # Get customer details
+PUT    /api/admin/customers/:id              # Update customer
+DELETE /api/admin/customers/:id              # Delete customer
+PUT    /api/admin/customers/:id/suspend      # Suspend customer
+PUT    /api/admin/customers/:id/activate     # Activate customer
+POST   /api/admin/customers/:id/send-email   # Send custom email
+POST   /api/admin/customers/:id/reset-password # Send password reset
+
+# Analytics:
+GET    /api/admin/analytics/revenue          # Revenue analytics
+GET    /api/admin/analytics/customers        # Customer analytics
+GET    /api/admin/analytics/products         # Product analytics
+GET    /api/admin/analytics/regions          # Regional analytics
+GET    /api/admin/analytics/export           # Export analytics CSV
+```
+
+### **10. IMPERSONATION ROUTES** (`/api/admin/impersonate`)
+
+```
+POST   /api/admin/impersonate/start          # Start impersonation
+POST   /api/admin/impersonate/end            # End impersonation
+GET    /api/admin/impersonate/logs           # Get impersonation logs
+POST   /api/admin/impersonate/add-note       # Add note during impersonation
+GET    /api/admin/impersonate/logs/:sessionId # Get single session details
+```
+
+### **11. CHAT ROUTES** (`/api/chat`)
+
+```
+# Customer:
+POST   /api/chat/start                       # Start new chat
+GET    /api/chat/history                     # Get chat history
+POST   /api/chat/message                     # Send message
+POST   /api/chat/upload                      # Upload file in chat
+POST   /api/chat/close                       # Close chat
+
+# Admin:
+GET    /api/chat/active                      # Get active chats
+GET    /api/chat/:chatId                     # Get chat details
+POST   /api/chat/:chatId/reply               # Reply to chat
+POST   /api/chat/:chatId/transfer            # Transfer to another admin
+POST   /api/chat/:chatId/close               # Close chat
+POST   /api/chat/:chatId/convert-ticket      # Convert to ticket
+
+# AI Bot:
+POST   /api/chat/ai/query                    # Query Gemini AI
+```
+
+### **12. TICKET ROUTES** (`/api/tickets`)
+
+```
+# Customer:
+GET    /api/tickets                          # Get user's tickets
+GET    /api/tickets/:ticketId                # Get ticket details
+POST   /api/tickets/create                   # Create new ticket
+POST   /api/tickets/:ticketId/reply          # Reply to ticket
+POST   /api/tickets/:ticketId/close          # Close ticket (if resolved)
+POST   /api/tickets/:ticketId/rate           # Rate ticket support
+
+# Admin:
+GET    /api/tickets/all                      # Get all tickets (filters)
+PUT    /api/tickets/:ticketId/assign         # Assign ticket
+PUT    /api/tickets/:ticketId/priority       # Change priority
+PUT    /api/tickets/:ticketId/status         # Change status
+POST   /api/tickets/:ticketId/note           # Add internal note
+POST   /api/tickets/:ticketId/reply          # Reply to ticket
+POST   /api/tickets/create-behalf            # Create on behalf of customer
+```
+
+### **13. NOTIFICATION ROUTES** (`/api/notifications`)
+
+```
+# Email Logs (Admin):
+GET    /api/notifications/email-logs         # Get all email logs
+GET    /api/notifications/email-logs/:id     # Get single email log
+POST   /api/notifications/email-logs/:id/resend # Resend email
+GET    /api/notifications/email-logs/search  # Search by shopperId
+
+# SMS Logs (Admin):
+GET    /api/notifications/sms-logs           # Get all SMS logs
+GET    /api/notifications/sms-logs/:id       # Get single SMS log
+POST   /api/notifications/sms-logs/:id/resend # Resend SMS
+
+# Send Custom (Admin):
+POST   /api/notifications/send-email         # Send custom email
+POST   /api/notifications/send-sms           # Send custom SMS
+```
+
+### **14. ANALYTICS ROUTES** (`/api/analytics`) - Admin Only
+
+```
+GET    /api/analytics/overview               # Overall stats
+GET    /api/analytics/revenue                # Revenue breakdown
+GET    /api/analytics/customers              # Customer analytics
+GET    /api/analytics/products               # Product performance
+GET    /api/analytics/regions                # Regional data
+GET    /api/analytics/subscriptions          # Subscription analytics
+GET    /api/analytics/orders                 # Order analytics
+GET    /api/analytics/export                 # Export report
+```
+
+### **15. HELP CENTER ROUTES** (`/api/help`)
+
+```
+# Public:
+GET    /api/help/articles                    # Get all help articles
+GET    /api/help/articles/:id                # Get single article
+GET    /api/help/articles/category/:category # Get by category
+GET    /api/help/articles/search             # Search articles
+GET    /api/help/faqs                        # Get all FAQs
+POST   /api/help/articles/:id/helpful        # Mark article helpful
+
+# Admin:
+POST   /api/help/articles                    # Create article
+PUT    /api/help/articles/:id                # Update article
+DELETE /api/help/articles/:id                # Delete article
+POST   /api/help/faqs                        # Create FAQ
+PUT    /api/help/faqs/:id                    # Update FAQ
+DELETE /api/help/faqs/:id                    # Delete FAQ
+```
+
+### **16. NOTES ROUTES** (`/api/notes`) - Admin Only
+
+```
+GET    /api/notes/customer/:customerId       # Get customer notes
+POST   /api/notes/customer/:customerId       # Add note to customer
+PUT    /api/notes/:noteId                    # Update note
+DELETE /api/notes/:noteId                    # Delete note
+```
+
+### **17. ADMIN ACTION LOGS** (`/api/admin/action-logs`)
+
+```
+GET    /api/admin/action-logs                # Get all action logs
+GET    /api/admin/action-logs/:adminId       # Get logs by admin
+GET    /api/admin/action-logs/customer/:customerId # Get logs for customer
+```
+
+---
+
+## 📦 NPM PACKAGES TO INSTALL
+
+### **Backend Packages:**
+
+```bash
+# Core
+npm install express dotenv cors
+
+# Database
+npm install mongoose
+
+# Authentication & Security
+npm install bcryptjs jsonwebtoken
+npm install express-validator
+npm install helmet
+npm install express-rate-limit
+
+# Email & SMS
+npm install nodemailer
+npm install twilio
+
+# Payment Gateways
+npm install stripe
+npm install @paypal/checkout-server-sdk
+npm install razorpay
+
+# Real-time Communication
+npm install socket.io
+
+# AI Integration
+npm install @google/generative-ai
+
+# Cron Jobs
+npm install node-cron
+
+# File Upload
+npm install multer
+npm install cloudinary  # (optional, for image hosting)
+
+# PDF Generation
+npm install pdfkit
+npm install html-pdf  # (alternative)
+
+# CSV Export
+npm install json2csv
+
+# Two-Factor Authentication
+npm install speakeasy
+npm install qrcode
+
+# IP Geolocation
+npm install geoip-lite
+npm install axios  # (for external geo API)
+
+# Utilities
+npm install moment  # (date handling)
+npm install uuid  # (unique ID generation)
+npm install compression  # (response compression)
+npm install morgan  # (HTTP logger)
+
+# Development
+npm install --save-dev nodemon
+npm install --save-dev eslint
+```
+
+### **Frontend Packages:**
+
+```bash
+# Create Vite React App
+npm create vite@latest client -- --template react
+
+cd client
+
+# Core
+npm install react-router-dom
+npm install axios
+
+# UI & Styling
+npm install tailwindcss postcss autoprefixer
+npm install @headlessui/react
+npm install @heroicons/react
+
+# Forms
+npm install react-hook-form
+npm install yup @hookform/resolvers
+
+# Notifications
+npm install react-toastify
+
+# Real-time
+npm install socket.io-client
+
+# Animations
+npm install framer-motion
+
+# Charts
+npm install chart.js react-chartjs-2
+# OR
+npm install recharts
+
+# Date Handling
+npm install date-fns
+
+# Payment Integration
+npm install @stripe/stripe-js @stripe/react-stripe-js
+
+# State Management (if needed beyond Context)
+# npm install zustand  # (lightweight alternative to Redux)
+
+# SEO
+npm install react-helmet-async
+
+# Utilities
+npm install clsx  # (conditional classnames)
+npm install react-loading-skeleton  # (loading states)
+
+# Development
+npm install --save-dev eslint
+npm install --save-dev prettier
+```
+
+---
+
+## 🔧 ENVIRONMENT VARIABLES
+
+### **Backend (.env):**
+
+```
+# Server
+NODE_ENV=development
+PORT=5000
+CLIENT_URL=http://localhost:5173
+
+# Database
+MONGO_URI=mongodb://localhost:27017/cloudservices
+# OR MongoDB Atlas:
+# MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/cloudservices
+
+# JWT
+JWT_SECRET=your_super_secret_jwt_key_minimum_32_characters_long
+JWT_EXPIRE=7d
+REFRESH_TOKEN_SECRET=your_refresh_token_secret_key
+REFRESH_TOKEN_EXPIRE=30d
+
+# Email (Nodemailer - Gmail)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_gmail_app_password
+EMAIL_FROM=CloudServices <noreply@cloudservices.com>
+
+# Email (SendGrid - Alternative)
+# SENDGRID_API_KEY=your_sendgrid_api_key
+
+# SMS (Twilio)
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_PHONE_NUMBER=+1234567890
+
+# Payment - Stripe
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Payment - PayPal
+PAYPAL_MODE=sandbox  # or 'live'
+PAYPAL_CLIENT_ID=your_paypal_client_id
+PAYPAL_CLIENT_SECRET=your_paypal_client_secret
+
+# Payment - Razorpay
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+
+# Google Gemini AI
+GEMINI_API_KEY=your_gemini_api_key
+
+# Cloudinary (Optional - for image uploads)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# GeoIP API (Optional)
+GEOIP_API_KEY=your_geoip_api_key
+
+# Admin Credentials (for seeding)
+ADMIN_EMAIL=admin@cloudservices.com
+ADMIN_PASSWORD=secureAdminPassword123
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000  # 15 minutes
+RATE_LIMIT_MAX_REQUESTS=100
+
+# Session
+SESSION_SECRET=your_session_secret_key
+
+# CORS
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
+```
+
+### **Frontend (.env):**
+
+```
+# API Base URL
+VITE_API_BASE_URL=http://localhost:5000/api
+
+# Stripe Publishable Key
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+
+# PayPal Client ID
+VITE_PAYPAL_CLIENT_ID=your_paypal_client_id
+
+# Razorpay Key ID
+VITE_RAZORPAY_KEY_ID=your_razorpay_key_id
+
+# Socket.io URL
+VITE_SOCKET_URL=http://localhost:5000
+
+# App Info
+VITE_APP_NAME=CloudServices
+VITE_APP_URL=http://localhost:5173
+
+# Google Analytics (Optional)
+VITE_GA_TRACKING_ID=UA-XXXXXXXXX-X
+```
+
+---
+
+## 🔄 DATA FLOW ARCHITECTURE
+
+### **1. USER REGISTRATION FLOW:**
+```
+Frontend (Register Form)
+  → POST /api/auth/register
+    → Validate input
+    → Check if email exists
+    → Hash password
+    → Generate shopperId
+    → Detect region (IP-based)
+    → Create user (isVerified: false)
+    → Generate OTP
+    → Store OTP in OTPLog
+    → Send verification email
+    → Return success message
+  
+Frontend (OTP Modal)
+  → POST /api/auth/verify-email
+    → Validate OTP
+    → Mark user as verified
+    → Mark OTP as used
+    → Send welcome email
+    → Return success + JWT token
+    → Frontend: Store token, redirect to dashboard
+```
+
+### **2. PRODUCT PURCHASE FLOW:**
+```
+1. Browse Products
+   → GET /api/products (filtered by region)
+   
+2. Add to Cart
+   → POST /api/cart/add
+   → Store in Cart collection
+   
+3. Checkout
+   → POST /api/orders/create
+     → Validate cart items
+     → Check region restrictions
+     → Create order (status: pending)
+     → Generate orderId
+     
+4. Payment
+   → POST /api/payment/stripe/checkout (or other gateway)
+     → Create payment intent
+     → Return client secret
+     
+5. Frontend Payment Processing
+   → User enters card details
+   → Payment gateway processes
+   
+6. Webhook (Payment Success)
+   → POST /api/payment/webhook/stripe
+     → Verify webhook signature
+     → Update order status: completed
+     → Create subscription entry
+     → Calculate expiry date
+     → Clear cart
+     → Send order confirmation email
+     → Send subscription activation email
+     → Log emails
+     
+7. Customer Dashboard
+   → GET /api/subscriptions
+   → Show active subscription
+```
+
+### **3. SUBSCRIPTION EXPIRY FLOW:**
+```
+Daily Cron Job (runs at 12:00 AM)
+  → Query subscriptions where:
+     - status: active
+     - expiryDate is within next 7 days
+  
+For each subscription:
+  → Check days until expiry
+  
+  If 7 days before:
+    → Send "7 days remaining" email
+    → Log email
+  
+  If 3 days before:
+    → Send "3 days remaining" email
+    → Log email
+  
+  If 1 day before:
+    → Send "1 day remaining" email
+    → Log email
+  
+  If expired (expiryDate < today):
+    → Update status to 'suspended'
+    → Send suspension email
+    → Log action in AdminActionLog
+    → Log email
+```
+
+### **4. ADMIN IMPERSONATION FLOW:**
+```
+1. Admin clicks "View as Customer"
+   → POST /api/admin/impersonate/start
+     → Validate admin role
+     → Create ImpersonationLog entry
+     → Generate special JWT with:
+        * adminId
+        * customerId
+        * isImpersonating: true
+        * impersonationId
+     → Return impersonation token
+     
+2. Frontend stores impersonation token
+   → Redirects to customer portal
+   → Shows impersonation banner
+   → Attaches X-Impersonation-Token header to all requests
+   
+3. Backend Middleware (on every request)
+   → Check for X-Impersonation-Token
+   → Verify token
+   → Validate impersonation session
+   → Attach admin and customer to request
+   → Log page view in ImpersonationLog
+   
+4. Protected Actions
+   → Middleware blocks write operations
+   → Returns 403 with message
+   
+5. Admin exits
+   → POST /api/admin/impersonate/end
+     → Update ImpersonationLog
+     → Calculate duration
+     → Log end time
+     → Return success
+   → Frontend: Clear token, redirect to admin dashboard
+```
+
+### **5. CHAT TO TICKET FLOW:**
+```
+1. Customer starts chat
+   → POST /api/chat/start
+     → Create Chat document
+     → Emit socket event to admins
+     → AI bot responds initially
+     
+2. Customer types message
+   → Socket event: 'message'
+   → Save to Chat document
+   → If AI can't help → escalate to human
+   
+3. Admin receives notification
+   → Opens chat interface
+   → Replies via socket
+   → Messages saved in real-time
+   
+4. Admin converts to ticket
+   → POST /api/chat/:chatId/convert-ticket
+     → Create Ticket document
+     → Copy chat history
+     → Generate ticketId
+     → Link to customer's shopperId
+     → Send ticket creation email
+     → Close chat
+     
+5. Ticket workflow continues
+   → Admin and customer reply via portal or email
+   → All updates logged
+   → Email notifications sent
+```
+
+---
+
+## 🔒 SECURITY ARCHITECTURE
+
+### **1. Authentication Flow:**
+```
+Login Request
+  → Validate credentials
+  → Check if 2FA enabled
+    → If yes:
+      - Generate OTP
+      - Send via email/SMS
+      - Store in session
+      - Return { requires2FA: true }
+    → If no:
+      - Generate JWT token
+      - Generate refresh token
+      - Return tokens
+```
+
+### **2. Authorization Layers:**
+```
+Request
+  → auth.middleware (verify JWT)
+    → Attach user to request
+  → roleCheck.middleware (check role)
+    → Allow/deny based on role
+  → impersonation.middleware (if impersonating)
+    → Validate impersonation token
+    → Attach both admin and customer
+  → blockWriteInImpersonation.middleware
+    → Block if impersonating and write operation
+```
+
+### **3. Rate Limiting:**
+```
+Auth routes: 5 requests per 15 minutes per IP
+API routes: 100 requests per 15 minutes per user
+Webhook routes: No limit (but verify signatures)
+```
+
+### **4. Data Validation:**
+```
+Request
+  → express-validator middleware
+  → Custom validators
+  → Sanitize inputs
+  → Check business rules
+  → Proceed or return 400 error
+```
+
+---
+
+## 📊 DATABASE INDEXES (For Performance)
+
+```javascript
+User:
+  - email (unique)
+  - shopperId (unique)
+  - region
+
+Product:
+  - productId (unique)
+  - category
+  - isActive
+  - availableRegions
+
+Order:
+  - orderId (unique)
+  - userId
+  - paymentStatus
+  - createdAt
+
+Subscription:
+  - subscriptionId (unique)
+  - userId
+  - status
+  - expiryDate  # Important for cron jobs
+  
+EmailLog:
+  - shopperId
+  - sentAt
+  - status
+
+Chat:
+  - customerId
+  - status
+  
+Ticket:
+  - ticketId (unique)
+  - userId
+  - status
+  - assignedTo
+```
+
+---
+
+## 🚀 DEPLOYMENT ARCHITECTURE
+
+### **Backend Deployment:**
+```
+Option 1: Railway
+  - Connect GitHub repo
+  - Auto-deploy on push
+  - Set environment variables
+  - Add MongoDB addon or use Atlas
+  
+Option 2: Render
+  - Connect GitHub repo
+  - Set build command: npm install
+  - Set start command: npm start
+  - Add environment variables
+  - Use external MongoDB Atlas
+  
+Option 3: Heroku
+  - Similar to Railway/Render
+  - Use ClearDB for MySQL or mLab for MongoDB
+  
+Option 4: VPS (DigitalOcean, AWS, etc.)
+  - Set up Node.js environment
+  - Install PM2 for process management
+  - Configure Nginx as reverse proxy
+  - Set up SSL with Let's Encrypt
+```
+
+### **Frontend Deployment:**
+```
+Option 1: Vercel (Recommended for React)
+  - Connect GitHub repo
+  - Auto-detect Vite
+  - Set environment variables
+  - Auto-deploy on push
+  
+Option 2: Netlify
+  - Similar to Vercel
+  - Drag-and-drop build folder option
+  
+Option 3: Same server as backend
+  - Build: npm run build
+  - Serve static files from Express
+  - Use express.static middleware
+```
+
+### **Database Deployment:**
+```
+MongoDB Atlas (Free Tier):
+  - 512MB storage free
+  - M0 cluster
+  - Shared resources
+  - Good for development/small projects
+  
+Production:
+  - Upgrade to M10+ cluster
+  - Dedicated resources
+  - Automatic backups
+  - Better performance
+```
+
+---
+
+## 📈 SCALABILITY CONSIDERATIONS
+
+### **Database:**
+```
+- Use indexes on frequently queried fields
+- Implement pagination on all list endpoints
+- Use aggregation for analytics
+- Consider Redis for caching frequently accessed data
+- Archive old logs to separate collection
+```
+
+### **API:**
+```
+- Implement rate limiting per user
+- Use compression middleware
+- Enable CORS only for specific origins
+- Implement API versioning (/api/v1/...)
+- Use query string caching for public routes
+```
+
+### **Real-time:**
+```
+- Use Socket.io rooms for chat isolation
+- Implement connection pooling
+- Limit concurrent connections per user
+- Use Redis adapter for Socket.io in multi-server setup
+```
+
+### **File Storage:**
+```
+- Use Cloudinary or AWS S3 for images
+- Implement file size limits
+- Validate file types
+- Generate thumbnails for images
+```
+
+---
+
+## 🔧 CRON JOB SCHEDULE
+
+```javascript
+Expiry Check: Every day at 12:00 AM
+  → Check subscriptions expiring in 7, 3, 1 days
+  → Send reminder emails
+
+Auto-Suspend: Every day at 12:30 AM
+  → Suspend expired subscriptions
+  → Send suspension emails
+
+Cleanup Job: Every Sunday at 2:00 AM
+  → Delete old OTP logs (> 30 days)
+  → Archive old email logs (> 90 days)
+  → Delete failed payment records (> 180 days)
+
+Auto-Renewal: Every day at 11:00 PM
+  → Check subscriptions expiring tomorrow with autoRenew ON
+  → Process payments
+  → Extend subscriptions or notify failure
+```
+
+---
+
+**That's your complete backend architecture buddy! Everything you need to know without code - just implementation info! 🚀**
+
+You now have:
+- ✅ Complete folder structure
+- ✅ All API endpoints mapped
+- ✅ Package lists
+- ✅ Environment variables
+- ✅ Data flow diagrams
+- ✅ Security architecture
+- ✅ Deployment strategy
+
+Start building phase by phase using the mega prompts! 💪
