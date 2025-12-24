@@ -9,7 +9,7 @@ import {
   MessageSquare,
   Settings,
   LogOut,
-  Sparkles,
+  Server,
   ChevronLeft,
   ChevronRight,
   Home,
@@ -52,15 +52,15 @@ const UserSidebar = ({ collapsed, onToggle }) => {
         <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border">
           {!collapsed && (
             <Link to="/dashboard" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-primary-foreground" />
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Server className="w-4 h-4 text-primary-foreground" />
               </div>
-              <span className="font-semibold text-sidebar-foreground">SaaSPlatform</span>
+              <span className="font-semibold text-sidebar-foreground">CloudHost</span>
             </Link>
           )}
           {collapsed && (
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center mx-auto">
-              <Sparkles className="w-4 h-4 text-primary-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto">
+              <Server className="w-4 h-4 text-primary-foreground" />
             </div>
           )}
         </div>

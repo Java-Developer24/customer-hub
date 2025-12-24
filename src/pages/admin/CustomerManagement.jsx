@@ -115,7 +115,7 @@ const CustomerManagement = () => {
         <div>
           <h1 className="text-2xl font-bold text-foreground">Customer Management</h1>
           <p className="text-muted-foreground">
-            Manage customer accounts, subscriptions, and access
+            Manage CloudHost customer accounts and subscriptions
           </p>
         </div>
         <Button>

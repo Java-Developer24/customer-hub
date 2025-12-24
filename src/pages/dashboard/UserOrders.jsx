@@ -323,8 +323,8 @@ const UserOrders = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Order History</h1>
-        <p className="text-muted-foreground">View and track your past purchases</p>
+        <h1 className="text-2xl font-bold text-foreground">My Orders</h1>
+        <p className="text-muted-foreground">View and track your CloudHost purchases</p>
       </div>
 
       {/* Stats Cards */}

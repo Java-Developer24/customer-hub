@@ -5,7 +5,7 @@ import {
   ArrowRight, Check, Server, Cloud, Globe, Mail, Lock, Palette,
   Search, Monitor, Zap, Shield, HeadphonesIcon, Clock, Star,
   ChevronDown, Play, Sparkles, Users, TrendingUp, CheckCircle2,
-  Cpu
+  Cpu, ShoppingCart
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,16 +19,34 @@ import MarketingNavbar from '@/components/marketing/MarketingNavbar';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
 import CookieConsent from '@/components/marketing/CookieConsent';
 import NewsletterPopup from '@/components/marketing/NewsletterPopup';
+import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/hooks/use-toast';
 
 const ProductPage = () => {
   const { productId } = useParams();
   const location = useLocation();
   const [isYearly, setIsYearly] = useState(true);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
 
   // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  const handleAddToCart = (plan, productName) => {
+    const cartItem = {
+      id: `${productId}-${plan.name.toLowerCase()}`,
+      name: `${productName} - ${plan.name}`,
+      price: isYearly ? plan.price.yearly : plan.price.monthly,
+      period: isYearly ? 'yearly' : 'monthly',
+    };
+    addToCart(cartItem);
+    toast({
+      title: "Added to Cart!",
+      description: `${cartItem.name} has been added to your cart.`,
+    });
+  };
 
   // Product data based on productId
   const products = {
@@ -655,9 +673,11 @@ const ProductPage = () => {
                   ))}
                 </ul>
                 <Button 
-                  className={`w-full ${plan.popular ? 'bg-primary hover:bg-primary/90' : ''}`} 
+                  className={`w-full gap-2 ${plan.popular ? 'bg-primary hover:bg-primary/90' : ''}`} 
                   variant={plan.popular ? 'default' : 'outline'}
+                  onClick={() => handleAddToCart(plan, product.name)}
                 >
+                  <ShoppingCart className="w-4 h-4" />
                   {plan.cta}
                 </Button>
               </motion.div>

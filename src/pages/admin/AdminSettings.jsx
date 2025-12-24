@@ -86,7 +86,7 @@ const AdminSettings = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Admin Settings</h1>
+          <h1 className="text-2xl font-bold text-foreground">CloudHost Settings</h1>
           <p className="text-muted-foreground">Manage platform configuration and preferences</p>
         </div>
         <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">

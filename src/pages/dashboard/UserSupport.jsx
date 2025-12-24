@@ -90,9 +90,9 @@ const UserSupport = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Support</h1>
+          <h1 className="text-2xl font-bold text-foreground">Support Center</h1>
           <p className="text-muted-foreground">
-            Get help with your account and products
+            Get help with your CloudHost account and services
           </p>
         </div>
         <Button onClick={() => setShowNewTicket(true)}>

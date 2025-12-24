@@ -46,15 +46,17 @@ const UserProducts = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">My Products</h1>
+          <h1 className="text-2xl font-bold text-foreground">My Services</h1>
           <p className="text-muted-foreground">
-            Manage your purchased products and subscriptions
+            Manage your CloudHost services and subscriptions
           </p>
         </div>
-        <Button>
-          <Package className="w-4 h-4 mr-2" />
-          Browse Products
-        </Button>
+        <Link to="/products">
+          <Button>
+            <Package className="w-4 h-4 mr-2" />
+            Browse Services
+          </Button>
+        </Link>
       </div>
 
       {/* Products Grid */}
