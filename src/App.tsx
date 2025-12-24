@@ -54,6 +54,8 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminPayments from "./pages/admin/AdminPayments";
 import AdminNotificationLogs from "./pages/admin/AdminNotificationLogs";
+import ImpersonationLogs from "./pages/admin/ImpersonationLogs";
+import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 import UserPaymentHistory from "./pages/dashboard/UserPaymentHistory";
 
 import NotFound from "./pages/NotFound";
@@ -128,6 +130,8 @@ const AppRoutes = () => {
         <Route path="tickets" element={<TicketManagement />} />
         <Route path="regions" element={<RegionManagement />} />
         <Route path="emails" element={<EmailManagement />} />
+        <Route path="impersonation-logs" element={<ImpersonationLogs />} />
+        <Route path="audit-logs" element={<AdminAuditLogs />} />
         <Route path="settings" element={<AdminSettings />} />
       </Route>
 
