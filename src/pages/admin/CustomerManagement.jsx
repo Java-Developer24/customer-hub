@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Search,
@@ -27,23 +28,19 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { adminCustomers } from '@/data/cloudhost-products';
 
-const customers = [
-  { id: 1, name: 'John Smith', email: 'john@example.com', status: 'active', products: 5, spent: '$1,249', joined: '2023-06-15', region: 'North America' },
-  { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', status: 'active', products: 3, spent: '$847', joined: '2023-08-22', region: 'Europe' },
-  { id: 3, name: 'Mike Wilson', email: 'mike@example.com', status: 'suspended', products: 2, spent: '$299', joined: '2023-09-10', region: 'Asia Pacific' },
-  { id: 4, name: 'Emily Brown', email: 'emily@example.com', status: 'active', products: 8, spent: '$2,199', joined: '2023-04-05', region: 'North America' },
-  { id: 5, name: 'David Lee', email: 'david@example.com', status: 'pending', products: 1, spent: '$99', joined: '2024-01-02', region: 'Europe' },
-  { id: 6, name: 'Lisa Chen', email: 'lisa@example.com', status: 'active', products: 4, spent: '$649', joined: '2023-11-18', region: 'Asia Pacific' },
-  { id: 7, name: 'James Taylor', email: 'james@example.com', status: 'active', products: 6, spent: '$1,599', joined: '2023-07-30', region: 'North America' },
-  { id: 8, name: 'Anna White', email: 'anna@example.com', status: 'suspended', products: 0, spent: '$0', joined: '2024-01-10', region: 'Europe' },
-];
+const customers = adminCustomers.map(c => ({
+  ...c,
+  products: c.products.length,
+}));
 
 const CustomerManagement = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [impersonating, setImpersonating] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const getStatusBadge = (status) => {
     const variants = {
@@ -199,9 +196,9 @@ const CustomerManagement = () => {
                         <DropdownMenuContent align="end" className="w-48">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => setSelectedCustomer(customer)}>
+                          <DropdownMenuItem onClick={() => navigate(`/admin/customers/${customer.id}`)}>
                             <Eye className="w-4 h-4 mr-2" />
-                            View Profile
+                            View Details
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleImpersonate(customer)}>
                             <UserCog className="w-4 h-4 mr-2" />
