@@ -14,19 +14,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-
-const subscriptions = [
-  { id: 1, product: 'Enterprise Plan', nextBilling: '2024-03-15', amount: 299, status: 'active', autoRenew: true },
-  { id: 2, product: 'API Access Pro', nextBilling: '2024-02-28', amount: 99, status: 'active', autoRenew: true },
-  { id: 3, product: 'Analytics Suite', nextBilling: '2024-01-20', amount: 149, status: 'expiring', autoRenew: false },
-  { id: 4, product: 'Storage Plus', nextBilling: '2024-01-05', amount: 49, status: 'cancelled', autoRenew: false },
-];
+import { sampleSubscriptions } from '@/data/cloudhost-products';
 
 const billingHistory = [
-  { id: 1, date: '2024-01-01', description: 'Enterprise Plan - Monthly', amount: 299, status: 'paid' },
-  { id: 2, date: '2024-01-01', description: 'API Access Pro - Monthly', amount: 99, status: 'paid' },
-  { id: 3, date: '2023-12-20', description: 'Analytics Suite - Monthly', amount: 149, status: 'paid' },
-  { id: 4, date: '2023-12-15', description: 'Storage Plus - Monthly', amount: 49, status: 'refunded' },
+  { id: 1, date: '2024-01-01', description: 'Web Hosting - Professional - Monthly', amount: 5.99, status: 'paid' },
+  { id: 2, date: '2024-01-01', description: 'Cloud Servers - Standard - Monthly', amount: 32, status: 'paid' },
+  { id: 3, date: '2023-12-20', description: 'SSL Certificates - Wildcard SSL - Yearly', amount: 39.99, status: 'paid' },
+  { id: 4, date: '2023-12-15', description: 'Email Hosting - Business - Monthly', amount: 3.99, status: 'paid' },
 ];
 
 const UserSubscriptions = () => {
@@ -56,7 +50,7 @@ const UserSubscriptions = () => {
     });
   };
 
-  const totalMonthly = subscriptions
+  const totalMonthly = sampleSubscriptions
     .filter(s => s.status === 'active')
     .reduce((sum, s) => sum + s.amount, 0);
 
@@ -118,7 +112,7 @@ const UserSubscriptions = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {subscriptions.map((subscription, index) => (
+            {sampleSubscriptions.map((subscription, index) => (
               <motion.div
                 key={subscription.id}
                 initial={{ opacity: 0, y: 10 }}

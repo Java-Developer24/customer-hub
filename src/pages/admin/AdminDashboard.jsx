@@ -53,18 +53,18 @@ const stats = [
 ];
 
 const recentCustomers = [
-  { id: 1, name: 'John Smith', email: 'john@example.com', status: 'active', products: 5, spent: '$1,249' },
-  { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', status: 'active', products: 3, spent: '$847' },
-  { id: 3, name: 'Mike Wilson', email: 'mike@example.com', status: 'suspended', products: 2, spent: '$299' },
-  { id: 4, name: 'Emily Brown', email: 'emily@example.com', status: 'active', products: 8, spent: '$2,199' },
-  { id: 5, name: 'David Lee', email: 'david@example.com', status: 'pending', products: 1, spent: '$99' },
+  { id: 1, name: 'John Smith', email: 'john@example.com', status: 'active', products: 3, spent: '$289' },
+  { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', status: 'active', products: 2, spent: '$456' },
+  { id: 3, name: 'Mike Wilson', email: 'mike@example.com', status: 'suspended', products: 1, spent: '$48' },
+  { id: 4, name: 'Emily Brown', email: 'emily@example.com', status: 'active', products: 3, spent: '$1,599' },
+  { id: 5, name: 'David Lee', email: 'david@example.com', status: 'pending', products: 1, spent: '$40' },
 ];
 
 const recentTickets = [
-  { id: 1, subject: 'Payment issue', customer: 'John Smith', status: 'open', priority: 'high' },
-  { id: 2, subject: 'Feature request', customer: 'Sarah Johnson', status: 'in_progress', priority: 'medium' },
-  { id: 3, subject: 'Account access', customer: 'Mike Wilson', status: 'open', priority: 'high' },
-  { id: 4, subject: 'Billing question', customer: 'Emily Brown', status: 'closed', priority: 'low' },
+  { id: 1, subject: 'Web Hosting - SSL Issue', customer: 'John Smith', status: 'open', priority: 'high' },
+  { id: 2, subject: 'Cloud Servers - Upgrade Request', customer: 'Sarah Johnson', status: 'in_progress', priority: 'medium' },
+  { id: 3, subject: 'Email Hosting - Access Issue', customer: 'Mike Wilson', status: 'open', priority: 'high' },
+  { id: 4, subject: 'Domain Transfer Help', customer: 'Emily Brown', status: 'closed', priority: 'low' },
 ];
 
 const AdminDashboard = () => {
