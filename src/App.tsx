@@ -49,6 +49,10 @@ import TicketManagement from "./pages/admin/TicketManagement";
 import RegionManagement from "./pages/admin/RegionManagement";
 import EmailManagement from "./pages/admin/EmailManagement";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminPayments from "./pages/admin/AdminPayments";
+import AdminNotificationLogs from "./pages/admin/AdminNotificationLogs";
+import UserPaymentHistory from "./pages/dashboard/UserPaymentHistory";
 
 import NotFound from "./pages/NotFound";
 
@@ -104,6 +108,7 @@ const AppRoutes = () => {
         <Route path="products" element={<UserProducts />} />
         <Route path="subscriptions" element={<UserSubscriptions />} />
         <Route path="orders" element={<UserOrders />} />
+        <Route path="payments" element={<UserPaymentHistory />} />
         <Route path="notifications" element={<UserNotifications />} />
         <Route path="support" element={<UserSupport />} />
         <Route path="settings" element={<UserSettings />} />
@@ -115,6 +120,9 @@ const AppRoutes = () => {
         <Route path="customers" element={<CustomerManagement />} />
         <Route path="customers/:customerId" element={<CustomerDetails />} />
         <Route path="products" element={<ProductManagement />} />
+        <Route path="orders" element={<AdminOrders />} />
+        <Route path="payments" element={<AdminPayments />} />
+        <Route path="notifications" element={<AdminNotificationLogs />} />
         <Route path="tickets" element={<TicketManagement />} />
         <Route path="regions" element={<RegionManagement />} />
         <Route path="emails" element={<EmailManagement />} />
