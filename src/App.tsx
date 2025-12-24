@@ -4,24 +4,38 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
 import Chatbot from "./components/Chatbot";
 
-// Pages
+// Marketplace Pages
+import Index from "./pages/Index";
+import ProductCatalog from "./pages/marketplace/ProductCatalog";
+import ProductDetails from "./pages/marketplace/ProductDetails";
+import Cart from "./pages/marketplace/Cart";
+import Checkout from "./pages/marketplace/Checkout";
+
+// Auth Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+
+// User Dashboard Pages
 import DashboardLayout from "./components/layout/DashboardLayout";
-import AdminLayout from "./components/layout/AdminLayout";
 import UserDashboard from "./pages/dashboard/UserDashboard";
 import UserProducts from "./pages/dashboard/UserProducts";
 import UserSubscriptions from "./pages/dashboard/UserSubscriptions";
 import UserNotifications from "./pages/dashboard/UserNotifications";
 import UserSupport from "./pages/dashboard/UserSupport";
+import UserSettings from "./pages/dashboard/UserSettings";
+
+// Admin Pages
+import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CustomerManagement from "./pages/admin/CustomerManagement";
 import ProductManagement from "./pages/admin/ProductManagement";
 import TicketManagement from "./pages/admin/TicketManagement";
 import RegionManagement from "./pages/admin/RegionManagement";
 import EmailManagement from "./pages/admin/EmailManagement";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,7 +59,15 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* Public Marketplace Routes */}
+      <Route path="/" element={<Index />} />
+      <Route path="/products" element={<ProductCatalog />} />
+      <Route path="/products/:categoryId" element={<ProductCatalog />} />
+      <Route path="/product/:productId" element={<ProductDetails />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/checkout" element={<Checkout />} />
+      
+      {/* Auth Routes */}
       <Route path="/login" element={isAuthenticated ? <Navigate to={isAdmin ? "/admin" : "/dashboard"} /> : <Login />} />
       <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
       
@@ -56,6 +78,7 @@ const AppRoutes = () => {
         <Route path="subscriptions" element={<UserSubscriptions />} />
         <Route path="notifications" element={<UserNotifications />} />
         <Route path="support" element={<UserSupport />} />
+        <Route path="settings" element={<UserSettings />} />
       </Route>
 
       {/* Admin Routes */}
@@ -68,8 +91,6 @@ const AppRoutes = () => {
         <Route path="emails" element={<EmailManagement />} />
       </Route>
 
-      {/* Redirects */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -79,12 +100,14 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AppRoutes />
-          <Chatbot />
-        </TooltipProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <AppRoutes />
+            <Chatbot />
+          </TooltipProvider>
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   </QueryClientProvider>
