@@ -26,6 +26,7 @@ import UserSubscriptions from "./pages/dashboard/UserSubscriptions";
 import UserNotifications from "./pages/dashboard/UserNotifications";
 import UserSupport from "./pages/dashboard/UserSupport";
 import UserSettings from "./pages/dashboard/UserSettings";
+import UserOrders from "./pages/dashboard/UserOrders";
 
 // Admin Pages
 import AdminLayout from "./components/layout/AdminLayout";
@@ -35,6 +36,7 @@ import ProductManagement from "./pages/admin/ProductManagement";
 import TicketManagement from "./pages/admin/TicketManagement";
 import RegionManagement from "./pages/admin/RegionManagement";
 import EmailManagement from "./pages/admin/EmailManagement";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 import NotFound from "./pages/NotFound";
 
@@ -76,6 +78,7 @@ const AppRoutes = () => {
         <Route index element={<UserDashboard />} />
         <Route path="products" element={<UserProducts />} />
         <Route path="subscriptions" element={<UserSubscriptions />} />
+        <Route path="orders" element={<UserOrders />} />
         <Route path="notifications" element={<UserNotifications />} />
         <Route path="support" element={<UserSupport />} />
         <Route path="settings" element={<UserSettings />} />
@@ -89,6 +92,7 @@ const AppRoutes = () => {
         <Route path="tickets" element={<TicketManagement />} />
         <Route path="regions" element={<RegionManagement />} />
         <Route path="emails" element={<EmailManagement />} />
+        <Route path="settings" element={<AdminSettings />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
