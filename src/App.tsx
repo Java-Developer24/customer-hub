@@ -43,6 +43,7 @@ import UserOrders from "./pages/dashboard/UserOrders";
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CustomerManagement from "./pages/admin/CustomerManagement";
+import CustomerDetails from "./pages/admin/CustomerDetails";
 import ProductManagement from "./pages/admin/ProductManagement";
 import TicketManagement from "./pages/admin/TicketManagement";
 import RegionManagement from "./pages/admin/RegionManagement";
@@ -112,6 +113,7 @@ const AppRoutes = () => {
       <Route path="/admin" element={<ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>}>
         <Route index element={<AdminDashboard />} />
         <Route path="customers" element={<CustomerManagement />} />
+        <Route path="customers/:customerId" element={<CustomerDetails />} />
         <Route path="products" element={<ProductManagement />} />
         <Route path="tickets" element={<TicketManagement />} />
         <Route path="regions" element={<RegionManagement />} />
