@@ -20,7 +20,10 @@ import Contact from "./pages/marketing/Contact";
 import Pricing from "./pages/marketing/Pricing";
 import Solutions from "./pages/marketing/Solutions";
 import Blog from "./pages/marketing/Blog";
+import BlogPost from "./pages/marketing/BlogPost";
 import HelpCenter from "./pages/marketing/HelpCenter";
+import Resources from "./pages/marketing/Resources";
+import ProductPage from "./pages/marketing/ProductPage";
 
 // Auth Pages
 import Login from "./pages/Login";
@@ -83,7 +86,10 @@ const AppRoutes = () => {
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/solutions/:solutionId" element={<Solutions />} />
       <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:slug" element={<BlogPost />} />
       <Route path="/help" element={<HelpCenter />} />
+      <Route path="/resources" element={<Resources />} />
+      <Route path="/product/:productId" element={<ProductPage />} />
       
       {/* Auth Routes */}
       <Route path="/login" element={isAuthenticated ? <Navigate to={isAdmin ? "/admin" : "/dashboard"} /> : <Login />} />
