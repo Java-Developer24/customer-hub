@@ -8,11 +8,12 @@ import {
   Bell,
   MessageSquare,
   Settings,
-  HelpCircle,
   LogOut,
   Sparkles,
   ChevronLeft,
   ChevronRight,
+  Home,
+  ShoppingBag,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -20,11 +21,16 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-  { icon: Package, label: 'Products', path: '/dashboard/products' },
+  { icon: Package, label: 'My Products', path: '/dashboard/products' },
   { icon: CreditCard, label: 'Subscriptions', path: '/dashboard/subscriptions' },
   { icon: Bell, label: 'Notifications', path: '/dashboard/notifications' },
   { icon: MessageSquare, label: 'Support', path: '/dashboard/support' },
   { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
+];
+
+const quickLinks = [
+  { icon: Home, label: 'Home', path: '/' },
+  { icon: ShoppingBag, label: 'Browse Products', path: '/products' },
 ];
 
 const UserSidebar = ({ collapsed, onToggle }) => {
@@ -58,8 +64,24 @@ const UserSidebar = ({ collapsed, onToggle }) => {
           )}
         </div>
 
+        {/* Quick Links */}
+        <div className="p-3 border-b border-sidebar-border">
+          {!collapsed && <p className="text-xs text-muted-foreground mb-2 px-3">Quick Links</p>}
+          {quickLinks.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 transition-all duration-200"
+            >
+              <item.icon className="w-4 h-4 shrink-0" />
+              {!collapsed && <span className="text-sm">{item.label}</span>}
+            </Link>
+          ))}
+        </div>
+
         {/* Navigation */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin">
+          {!collapsed && <p className="text-xs text-muted-foreground mb-2 px-3">Account</p>}
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
