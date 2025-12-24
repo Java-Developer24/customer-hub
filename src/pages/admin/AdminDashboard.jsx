@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   Users,
   Package,
@@ -7,86 +8,108 @@ import {
   TrendingUp,
   ArrowUpRight,
   ArrowDownRight,
-  MoreHorizontal,
   Eye,
   Mail,
-  Ticket,
   Activity,
+  ShoppingCart,
+  Clock,
+  AlertTriangle,
+  DollarSign,
+  UserPlus,
+  UserX,
+  Ticket,
+  RefreshCw,
+  ChevronRight
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend
+} from 'recharts';
+import {
+  dashboardQuickStats,
+  monthlyRevenueData,
+  regionDistributionData,
+  productSubscriptionData,
+  topProducts,
+  expiringSubscriptions,
+  recentAdminOrders
+} from '@/data/admin-dashboard-data';
 
-const stats = [
-  {
-    title: 'Total Customers',
-    value: '2,847',
-    change: '+12.5%',
-    trend: 'up',
-    icon: Users,
-    color: 'primary',
-  },
-  {
-    title: 'Active Products',
-    value: '156',
-    change: '+8.2%',
-    trend: 'up',
-    icon: Package,
-    color: 'success',
-  },
-  {
-    title: 'Monthly Revenue',
-    value: '$84,232',
-    change: '+18.3%',
-    trend: 'up',
-    icon: CreditCard,
-    color: 'accent',
-  },
-  {
-    title: 'Active Subscriptions',
-    value: '1,429',
-    change: '-2.1%',
-    trend: 'down',
-    icon: TrendingUp,
-    color: 'warning',
-  },
-];
-
-const recentCustomers = [
-  { id: 1, name: 'John Smith', email: 'john@example.com', status: 'active', products: 3, spent: '$289' },
-  { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', status: 'active', products: 2, spent: '$456' },
-  { id: 3, name: 'Mike Wilson', email: 'mike@example.com', status: 'suspended', products: 1, spent: '$48' },
-  { id: 4, name: 'Emily Brown', email: 'emily@example.com', status: 'active', products: 3, spent: '$1,599' },
-  { id: 5, name: 'David Lee', email: 'david@example.com', status: 'pending', products: 1, spent: '$40' },
-];
-
-const recentTickets = [
-  { id: 1, subject: 'Web Hosting - SSL Issue', customer: 'John Smith', status: 'open', priority: 'high' },
-  { id: 2, subject: 'Cloud Servers - Upgrade Request', customer: 'Sarah Johnson', status: 'in_progress', priority: 'medium' },
-  { id: 3, subject: 'Email Hosting - Access Issue', customer: 'Mike Wilson', status: 'open', priority: 'high' },
-  { id: 4, subject: 'Domain Transfer Help', customer: 'Emily Brown', status: 'closed', priority: 'low' },
-];
+const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--warning))', 'hsl(var(--success))'];
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
+  const stats = [
+    {
+      title: 'Total Customers',
+      value: dashboardQuickStats.activeCustomers.toLocaleString(),
+      change: '+12.5%',
+      trend: 'up',
+      icon: Users,
+      subtitle: `+${dashboardQuickStats.newCustomersThisMonth} this month`,
+      color: 'primary',
+    },
+    {
+      title: 'Active Subscriptions',
+      value: dashboardQuickStats.activeSubscriptions.toLocaleString(),
+      change: '+8.2%',
+      trend: 'up',
+      icon: RefreshCw,
+      subtitle: 'Across all products',
+      color: 'success',
+    },
+    {
+      title: 'Monthly Revenue',
+      value: `$${(dashboardQuickStats.monthlyRevenue).toLocaleString()}`,
+      change: '+18.3%',
+      trend: 'up',
+      icon: DollarSign,
+      subtitle: `YTD: $${(dashboardQuickStats.yearlyRevenue / 1000).toFixed(0)}K`,
+      color: 'accent',
+    },
+    {
+      title: 'Total Revenue',
+      value: `$${(dashboardQuickStats.totalRevenue / 1000).toFixed(0)}K`,
+      change: '+22.1%',
+      trend: 'up',
+      icon: TrendingUp,
+      subtitle: 'All time',
+      color: 'warning',
+    },
+  ];
+
+  const quickStats = [
+    { label: 'Active Customers', value: dashboardQuickStats.activeCustomers, icon: Users, color: 'text-success' },
+    { label: 'Suspended', value: dashboardQuickStats.suspendedAccounts, icon: UserX, color: 'text-destructive' },
+    { label: 'Total Orders', value: dashboardQuickStats.totalOrders, icon: ShoppingCart, color: 'text-primary' },
+    { label: 'Pending Payments', value: dashboardQuickStats.pendingPayments, icon: Clock, color: 'text-warning' },
+    { label: 'Open Tickets', value: dashboardQuickStats.openTickets, icon: Ticket, color: 'text-accent' },
+  ];
+
   const getStatusBadge = (status) => {
     const variants = {
-      active: 'bg-success/10 text-success border-success/20',
-      suspended: 'bg-destructive/10 text-destructive border-destructive/20',
+      completed: 'bg-success/10 text-success border-success/20',
+      processing: 'bg-primary/10 text-primary border-primary/20',
       pending: 'bg-warning/10 text-warning border-warning/20',
-      open: 'bg-primary/10 text-primary border-primary/20',
-      in_progress: 'bg-warning/10 text-warning border-warning/20',
-      closed: 'bg-muted text-muted-foreground border-muted',
+      failed: 'bg-destructive/10 text-destructive border-destructive/20',
+      refunded: 'bg-muted text-muted-foreground border-muted',
     };
-    return variants[status] || variants.active;
-  };
-
-  const getPriorityBadge = (priority) => {
-    const variants = {
-      high: 'bg-destructive/10 text-destructive border-destructive/20',
-      medium: 'bg-warning/10 text-warning border-warning/20',
-      low: 'bg-muted text-muted-foreground border-muted',
-    };
-    return variants[priority] || variants.medium;
+    return variants[status] || variants.pending;
   };
 
   return (
@@ -96,22 +119,22 @@ const AdminDashboard = () => {
         <div>
           <h1 className="text-2xl font-bold text-foreground">CloudHost Admin Dashboard</h1>
           <p className="text-muted-foreground">
-            Overview of your platform performance and metrics
+            Overview of platform performance and metrics
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => navigate('/admin/notifications')}>
             <Mail className="w-4 h-4 mr-2" />
-            Send Broadcast
+            Notification Logs
           </Button>
-          <Button>
+          <Button onClick={() => navigate('/admin/orders')}>
             <Activity className="w-4 h-4 mr-2" />
-            View Reports
+            View All Orders
           </Button>
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Main Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <motion.div
@@ -120,7 +143,7 @@ const AdminDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="glass card-hover">
+            <Card className="border-border/50 hover:border-primary/30 transition-all">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between">
                   <div>
@@ -131,8 +154,8 @@ const AdminDashboard = () => {
                     }`}>
                       {stat.trend === 'up' ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                       <span>{stat.change}</span>
-                      <span className="text-muted-foreground ml-1">vs last month</span>
                     </div>
+                    <p className="text-xs text-muted-foreground mt-1">{stat.subtitle}</p>
                   </div>
                   <div className={`p-2.5 rounded-lg bg-${stat.color}/10`}>
                     <stat.icon className={`w-5 h-5 text-${stat.color}`} />
@@ -144,18 +167,201 @@ const AdminDashboard = () => {
         ))}
       </div>
 
+      {/* Quick Stats Row */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        {quickStats.map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 + index * 0.05 }}
+          >
+            <Card className="border-border/50">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                  <div>
+                    <p className="text-xl font-bold">{stat.value.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground">{stat.label}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Customers */}
+        {/* Revenue Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="lg:col-span-2"
         >
-          <Card className="glass">
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Revenue Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={monthlyRevenueData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickFormatter={(v) => `$${v/1000}K`} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                    formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    dot={{ fill: 'hsl(var(--primary))' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Region Distribution */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Customer Regions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={regionDistributionData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {regionDistributionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="flex flex-wrap gap-2 justify-center mt-2">
+                {regionDistributionData.map((region, index) => (
+                  <div key={region.name} className="flex items-center gap-1 text-xs">
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index] }} />
+                    <span className="text-muted-foreground">{region.name}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Product Stats & Expiring Subscriptions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Product Subscriptions Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="lg:col-span-2"
+        >
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Product Subscriptions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={productSubscriptionData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <YAxis dataKey="product" type="category" stroke="hsl(var(--muted-foreground))" fontSize={11} width={100} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Expiring Subscriptions Alert */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+        >
+          <Card className="border-border/50 border-warning/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-warning" />
+                Expiring Soon
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">Next 7 days</p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {expiringSubscriptions.slice(0, 4).map((sub) => (
+                  <div key={sub.id} className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{sub.customerName}</p>
+                      <p className="text-xs text-muted-foreground truncate">{sub.product}</p>
+                    </div>
+                    <Badge variant="outline" className="bg-warning/10 text-warning border-warning/20 shrink-0 ml-2">
+                      {sub.daysLeft}d
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+              <Button variant="ghost" size="sm" className="w-full mt-3 gap-1" onClick={() => navigate('/admin/customers')}>
+                View All
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Recent Orders & Top Products */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Recent Orders */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="lg:col-span-2"
+        >
+          <Card className="border-border/50">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">Recent Customers</CardTitle>
-              <Button variant="ghost" size="sm">
+              <CardTitle className="text-lg font-semibold">Recent Orders</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => navigate('/admin/orders')}>
                 View All
               </Button>
             </CardHeader>
@@ -164,42 +370,32 @@ const AdminDashboard = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border">
+                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Order</th>
                       <th className="text-left text-sm font-medium text-muted-foreground pb-3">Customer</th>
+                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Total</th>
                       <th className="text-left text-sm font-medium text-muted-foreground pb-3">Status</th>
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Products</th>
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Spent</th>
                       <th className="text-right text-sm font-medium text-muted-foreground pb-3">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {recentCustomers.map((customer) => (
-                      <tr key={customer.id} className="border-b border-border/50 hover:bg-secondary/30">
+                    {recentAdminOrders.slice(0, 6).map((order) => (
+                      <tr key={order.id} className="border-b border-border/50 hover:bg-secondary/30">
                         <td className="py-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                              <span className="text-sm font-medium text-primary">
-                                {customer.name.charAt(0)}
-                              </span>
-                            </div>
-                            <div>
-                              <p className="font-medium text-foreground text-sm">{customer.name}</p>
-                              <p className="text-xs text-muted-foreground">{customer.email}</p>
-                            </div>
-                          </div>
+                          <span className="font-medium text-primary text-sm">{order.id}</span>
                         </td>
                         <td className="py-3">
-                          <Badge variant="outline" className={getStatusBadge(customer.status)}>
-                            {customer.status}
+                          <p className="font-medium text-foreground text-sm">{order.customer}</p>
+                          <p className="text-xs text-muted-foreground">{order.email}</p>
+                        </td>
+                        <td className="py-3 text-sm font-medium">${order.total.toFixed(2)}</td>
+                        <td className="py-3">
+                          <Badge variant="outline" className={getStatusBadge(order.status)}>
+                            {order.status}
                           </Badge>
                         </td>
-                        <td className="py-3 text-sm text-foreground">{customer.products}</td>
-                        <td className="py-3 text-sm font-medium text-foreground">{customer.spent}</td>
                         <td className="py-3 text-right">
-                          <Button variant="ghost" size="icon-sm">
+                          <Button variant="ghost" size="sm" onClick={() => navigate('/admin/orders')}>
                             <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon-sm">
-                            <MoreHorizontal className="w-4 h-4" />
                           </Button>
                         </td>
                       </tr>
@@ -211,38 +407,34 @@ const AdminDashboard = () => {
           </Card>
         </motion.div>
 
-        {/* Recent Tickets */}
+        {/* Top Products */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.9 }}
         >
-          <Card className="glass">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">Recent Tickets</CardTitle>
-              <Button variant="ghost" size="sm">
-                View All
-              </Button>
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Top Products</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {recentTickets.map((ticket) => (
-                  <div
-                    key={ticket.id}
-                    className="p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <p className="font-medium text-foreground text-sm">{ticket.subject}</p>
-                      <Badge variant="outline" className={getPriorityBadge(ticket.priority)}>
-                        {ticket.priority}
-                      </Badge>
+              <div className="space-y-4">
+                {topProducts.map((product, index) => (
+                  <div key={product.name} className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                      {index + 1}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs text-muted-foreground">{ticket.customer}</p>
-                      <Badge variant="outline" className={getStatusBadge(ticket.status)}>
-                        {ticket.status.replace('_', ' ')}
-                      </Badge>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{product.name}</p>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-muted-foreground">{product.subscribers} subs</span>
+                        <span className="text-success flex items-center">
+                          <ArrowUpRight className="w-3 h-3" />
+                          {product.growth}%
+                        </span>
+                      </div>
                     </div>
+                    <p className="text-sm font-semibold">${product.revenue.toLocaleString()}</p>
                   </div>
                 ))}
               </div>

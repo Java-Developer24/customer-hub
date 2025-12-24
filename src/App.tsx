@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
+import { ImpersonationProvider } from "./contexts/ImpersonationContext";
+import ImpersonationBanner from "./components/admin/ImpersonationBanner";
 import Chatbot from "./components/Chatbot";
 
 // Marketplace Pages
@@ -139,12 +141,15 @@ const App = () => (
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <AppRoutes />
-            <Chatbot />
-          </TooltipProvider>
+          <ImpersonationProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <ImpersonationBanner />
+              <AppRoutes />
+              <Chatbot />
+            </TooltipProvider>
+          </ImpersonationProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>
