@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   ArrowRight, Check, Server, Cloud, Globe, Mail, Lock, Palette,
   Search, Monitor, Zap, Shield, HeadphonesIcon, Clock, Star,
-  ChevronDown, Play, Sparkles, Users, TrendingUp, CheckCircle2
+  ChevronDown, Play, Sparkles, Users, TrendingUp, CheckCircle2,
+  Cpu
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,10 +17,18 @@ import {
 } from "@/components/ui/accordion";
 import MarketingNavbar from '@/components/marketing/MarketingNavbar';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
+import CookieConsent from '@/components/marketing/CookieConsent';
+import NewsletterPopup from '@/components/marketing/NewsletterPopup';
 
 const ProductPage = () => {
   const { productId } = useParams();
+  const location = useLocation();
   const [isYearly, setIsYearly] = useState(true);
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   // Product data based on productId
   const products = {
@@ -765,6 +774,8 @@ const ProductPage = () => {
       </section>
 
       <MarketingFooter />
+      <CookieConsent />
+      <NewsletterPopup />
     </div>
   );
 };

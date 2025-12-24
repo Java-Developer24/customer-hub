@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronDown, 
   Menu, 
@@ -16,7 +16,8 @@ import {
   TrendingUp,
   Cpu,
   Cloud,
-  ChevronRight
+  ChevronRight,
+  FileText
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,14 +25,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 
 const products = [
-  { name: 'Web Hosting', icon: Globe, href: '/products/hosting', desc: 'Fast & reliable hosting' },
-  { name: 'Cloud Servers', icon: Cloud, href: '/products/servers', desc: 'Scalable cloud infrastructure' },
-  { name: 'Domain Names', icon: Globe, href: '/products/domains', desc: 'Find your perfect domain' },
-  { name: 'Email Hosting', icon: Mail, href: '/products/email', desc: 'Professional email solutions' },
-  { name: 'SSL Certificates', icon: Shield, href: '/products/ssl', desc: 'Secure your website' },
-  { name: 'Website Builder', icon: Layout, href: '/products/builder', desc: 'Build without code' },
-  { name: 'SEO Tools', icon: TrendingUp, href: '/products/seo', desc: 'Boost your rankings' },
-  { name: 'VPS Hosting', icon: Cpu, href: '/products/vps', desc: 'Dedicated virtual servers' },
+  { name: 'Web Hosting', icon: Server, href: '/product/web-hosting', desc: 'Fast & reliable hosting' },
+  { name: 'Cloud Servers', icon: Cloud, href: '/product/cloud-servers', desc: 'Scalable cloud infrastructure' },
+  { name: 'Domain Names', icon: Globe, href: '/product/domain-names', desc: 'Find your perfect domain' },
+  { name: 'Email Hosting', icon: Mail, href: '/product/email-hosting', desc: 'Professional email solutions' },
+  { name: 'SSL Certificates', icon: Shield, href: '/product/ssl-certificates', desc: 'Secure your website' },
+  { name: 'Website Builder', icon: Layout, href: '/product/website-builder', desc: 'Build without code' },
+  { name: 'SEO Tools', icon: TrendingUp, href: '/product/seo-tools', desc: 'Boost your rankings' },
+  { name: 'VPS Hosting', icon: Cpu, href: '/product/vps-hosting', desc: 'Dedicated virtual servers' },
 ];
 
 const solutions = [
@@ -44,14 +45,27 @@ const solutions = [
 const resources = [
   { name: 'Blog', href: '/blog' },
   { name: 'Help Center', href: '/help' },
-  { name: 'Documentation', href: '/docs' },
-  { name: 'API Reference', href: '/api-docs' },
+  { name: 'Resources', href: '/resources' },
+];
+
+// Mock blog data for search
+const blogPosts = [
+  { title: 'How to Choose the Right Web Hosting', slug: 'how-to-choose-web-hosting', type: 'blog' },
+  { title: '10 Tips for Website Security', slug: 'website-security-tips', type: 'blog' },
+  { title: 'Understanding SSL Certificates', slug: 'understanding-ssl', type: 'blog' },
+  { title: 'Domain Name Best Practices', slug: 'domain-best-practices', type: 'blog' },
+  { title: 'Cloud vs Shared Hosting', slug: 'cloud-vs-shared-hosting', type: 'blog' },
 ];
 
 const MarketingNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const searchRef = useRef(null);
+  const navigate = useNavigate();
   const { isAuthenticated, isAdmin } = useAuth();
   const { items, itemCount } = useCart();
 
@@ -60,6 +74,46 @@ const MarketingNavbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchOpen(false);
+        setSearchQuery('');
+        setSearchResults([]);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (searchQuery.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase();
+    
+    // Search products
+    const productResults = products
+      .filter(p => p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query))
+      .map(p => ({ ...p, type: 'product' }));
+    
+    // Search blog posts
+    const blogResults = blogPosts
+      .filter(b => b.title.toLowerCase().includes(query))
+      .map(b => ({ ...b, href: `/blog/${b.slug}`, icon: FileText, name: b.title, desc: 'Blog Post' }));
+
+    setSearchResults([...productResults, ...blogResults].slice(0, 6));
+  }, [searchQuery]);
+
+  const handleSearchSelect = (href) => {
+    navigate(href);
+    setIsSearchOpen(false);
+    setSearchQuery('');
+    setSearchResults([]);
+  };
 
   const cartCount = itemCount || 0;
 
@@ -202,6 +256,63 @@ const MarketingNavbar = () => {
 
           {/* Right Side */}
           <div className="hidden lg:flex items-center gap-3">
+            {/* Search */}
+            <div ref={searchRef} className="relative">
+              <button 
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="p-2 text-foreground/80 hover:text-foreground transition-colors"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+              
+              <AnimatePresence>
+                {isSearchOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                    className="absolute top-full right-0 mt-2 w-80 p-4 glass-card rounded-xl shadow-xl border border-border"
+                  >
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="Search products, blog posts..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10 bg-background/50 border-border/50 focus:border-primary"
+                        autoFocus
+                      />
+                    </div>
+                    
+                    {searchResults.length > 0 && (
+                      <div className="mt-4 space-y-1 max-h-64 overflow-y-auto">
+                        {searchResults.map((result, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleSearchSelect(result.href)}
+                            className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-secondary transition-colors text-left"
+                          >
+                            <div className="p-1.5 bg-primary/10 rounded">
+                              <result.icon className="w-4 h-4 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-foreground">{result.name}</p>
+                              <p className="text-xs text-muted-foreground">{result.desc}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {searchQuery.length >= 2 && searchResults.length === 0 && (
+                      <p className="mt-4 text-sm text-muted-foreground text-center">No results found</p>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <Link to="/cart" className="relative p-2 text-foreground/80 hover:text-foreground transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
@@ -251,6 +362,34 @@ const MarketingNavbar = () => {
           className="lg:hidden bg-card border-t border-border"
         >
           <div className="container mx-auto px-4 py-4 space-y-4">
+            {/* Mobile Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-background/50"
+              />
+            </div>
+            
+            {searchResults.length > 0 && (
+              <div className="space-y-1 pb-4 border-b border-border">
+                {searchResults.map((result, idx) => (
+                  <Link
+                    key={idx}
+                    to={result.href}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary"
+                  >
+                    <result.icon className="w-4 h-4 text-primary" />
+                    <span className="text-sm">{result.name}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+
             <div className="space-y-2">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Products</p>
               {products.slice(0, 4).map((product) => (
