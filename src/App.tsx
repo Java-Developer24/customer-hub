@@ -14,6 +14,14 @@ import ProductDetails from "./pages/marketplace/ProductDetails";
 import Cart from "./pages/marketplace/Cart";
 import Checkout from "./pages/marketplace/Checkout";
 
+// Marketing Pages
+import About from "./pages/marketing/About";
+import Contact from "./pages/marketing/Contact";
+import Pricing from "./pages/marketing/Pricing";
+import Solutions from "./pages/marketing/Solutions";
+import Blog from "./pages/marketing/Blog";
+import HelpCenter from "./pages/marketing/HelpCenter";
+
 // Auth Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -68,6 +76,14 @@ const AppRoutes = () => {
       <Route path="/product/:productId" element={<ProductDetails />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout" element={<Checkout />} />
+      
+      {/* Marketing Pages */}
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/solutions/:solutionId" element={<Solutions />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/help" element={<HelpCenter />} />
       
       {/* Auth Routes */}
       <Route path="/login" element={isAuthenticated ? <Navigate to={isAdmin ? "/admin" : "/dashboard"} /> : <Login />} />
