@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AdminSidebar from './AdminSidebar';
+import CustomerSearchAutocomplete from '@/components/admin/CustomerSearchAutocomplete';
 import { cn } from '@/lib/utils';
 
 const AdminLayout = () => {
@@ -20,6 +21,17 @@ const AdminLayout = () => {
           sidebarCollapsed ? "ml-16" : "ml-64"
         )}
       >
+        {/* Top Bar with Search */}
+        <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="flex items-center justify-between px-6 py-3">
+            <div className="flex-1 max-w-md">
+              <CustomerSearchAutocomplete 
+                placeholder="Quick search customers (name, email, ID)..."
+              />
+            </div>
+          </div>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
