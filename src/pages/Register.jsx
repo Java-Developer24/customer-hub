@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles, User } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles, User, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { HeroBackground, FloatingParticles } from '@/components/effects/AnimatedBackground';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -94,13 +96,25 @@ const Register = () => {
 
   const passwordStrength = getPasswordStrength();
 
+  const features = [
+    'Unlimited projects',
+    'Advanced analytics',
+    '24/7 support',
+    'API access',
+  ];
+
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-background via-card to-background">
-        <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-20" />
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <HeroBackground variant="hero" />
+        
+        {/* Floating orbs */}
+        <div className="orb orb-accent w-96 h-96 top-1/3 right-1/4" style={{ animationDelay: '0s' }} />
+        <div className="orb orb-primary w-80 h-80 bottom-1/3 left-1/4" style={{ animationDelay: '2s' }} />
+        <div className="orb orb-pink w-64 h-64 top-1/2 left-1/3" style={{ animationDelay: '4s' }} />
+        
+        <FloatingParticles count={40} />
         
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12">
           <motion.div
@@ -109,25 +123,56 @@ const Register = () => {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-                <Sparkles className="w-6 h-6 text-primary-foreground" />
+            <motion.div 
+              className="flex items-center justify-center gap-3 mb-8"
+              whileHover={{ scale: 1.02 }}
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg glow animate-pulse-slow">
+                <Sparkles className="w-7 h-7 text-primary-foreground" />
               </div>
-              <span className="text-3xl font-bold text-foreground">SaaSPlatform</span>
-            </div>
-            <h1 className="text-4xl font-bold mb-4 text-foreground">
+              <span className="text-3xl font-bold text-gradient-primary">SaaSPlatform</span>
+            </motion.div>
+            
+            <h1 className="text-5xl font-black mb-6 text-foreground leading-tight">
               Start Your Journey
-              <span className="block gradient-text">Today</span>
+              <span className="block text-gradient-primary mt-2">Today</span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-md">
+            
+            <p className="text-muted-foreground text-lg max-w-md mb-10 leading-relaxed">
               Join thousands of businesses already using our platform to grow and succeed.
             </p>
+
+            {/* Features list */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="grid grid-cols-2 gap-3 max-w-sm mx-auto"
+            >
+              {features.map((feature, i) => (
+                <motion.div
+                  key={feature}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                  className="flex items-center gap-2 glass-card p-3 rounded-lg"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
+                  <span className="text-sm text-foreground">{feature}</span>
+                </motion.div>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
       </div>
 
       {/* Right Panel - Register Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background relative">
+        {/* Theme Toggle */}
+        <div className="absolute top-4 right-4">
+          <ThemeToggle variant="minimal" />
+        </div>
+        
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -143,50 +188,50 @@ const Register = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <div className="relative group">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="name"
                     type="text"
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="pl-10 h-12 bg-secondary border-border focus:border-primary"
+                    className="pl-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <div className="relative group">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-secondary border-border focus:border-primary"
+                    className="pl-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <div className="relative group">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 bg-secondary border-border focus:border-primary"
+                    className="pl-10 pr-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -197,14 +242,14 @@ const Register = () => {
                       {[1, 2, 3, 4].map((i) => (
                         <div
                           key={i}
-                          className={`h-1 flex-1 rounded-full transition-all ${
+                          className={`h-1.5 flex-1 rounded-full transition-all ${
                             i <= passwordStrength.strength ? passwordStrength.color : 'bg-muted'
                           }`}
                         />
                       ))}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Password strength: {passwordStrength.label || 'Too weak'}
+                      Password strength: <span className={passwordStrength.strength >= 3 ? 'text-success' : passwordStrength.strength >= 2 ? 'text-primary' : 'text-destructive'}>{passwordStrength.label || 'Too weak'}</span>
                     </p>
                   </div>
                 )}
@@ -212,26 +257,31 @@ const Register = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <div className="relative group">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="confirmPassword"
                     type="password"
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="pl-10 h-12 bg-secondary border-border focus:border-primary"
+                    className="pl-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all"
                   />
                 </div>
                 {confirmPassword && password !== confirmPassword && (
                   <p className="text-xs text-destructive">Passwords do not match</p>
+                )}
+                {confirmPassword && password === confirmPassword && confirmPassword.length > 0 && (
+                  <p className="text-xs text-success flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> Passwords match
+                  </p>
                 )}
               </div>
 
               <Button
                 type="submit"
                 size="lg"
-                className="w-full"
+                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 glow transition-all"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -261,7 +311,7 @@ const Register = () => {
               className="space-y-6"
             >
               <div className="text-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4 glow-soft">
                   <Mail className="w-8 h-8 text-success" />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Verify your email</h3>
@@ -278,7 +328,7 @@ const Register = () => {
                   placeholder="000000"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="h-12 text-center text-2xl tracking-widest bg-secondary border-border"
+                  className="h-14 text-center text-2xl tracking-[0.5em] font-mono glass-subtle border-border/50"
                   maxLength={6}
                 />
               </div>
@@ -286,14 +336,14 @@ const Register = () => {
               <Button
                 onClick={handleVerify}
                 size="lg"
-                className="w-full"
+                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 glow"
               >
                 Verify & Continue
               </Button>
 
               <button
                 onClick={() => setShowVerify(false)}
-                className="w-full text-center text-muted-foreground hover:text-foreground text-sm"
+                className="w-full text-center text-muted-foreground hover:text-foreground text-sm transition-colors"
               >
                 ← Back to registration
               </button>
