@@ -65,9 +65,9 @@ const UserSubscriptions = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Subscriptions</h1>
+          <h1 className="text-2xl font-bold text-foreground">My Subscriptions</h1>
           <p className="text-muted-foreground">
-            Manage your billing and subscription preferences
+            Manage your CloudHost billing and subscription preferences
           </p>
         </div>
       </div>

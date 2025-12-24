@@ -94,7 +94,7 @@ const UserDashboard = () => {
             Welcome back, {user?.name || 'User'}
           </h1>
           <p className="text-muted-foreground">
-            Here's an overview of your account activity
+            Here's an overview of your CloudHost account
           </p>
         </div>
         <Button variant="outline" className="w-fit">

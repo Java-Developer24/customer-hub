@@ -155,9 +155,9 @@ const ProductManagement = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Product Management</h1>
+          <h1 className="text-2xl font-bold text-foreground">Service Management</h1>
           <p className="text-muted-foreground">
-            Manage your products, pricing, and regional availability
+            Manage CloudHost services, pricing, and availability
           </p>
         </div>
         <Button onClick={() => setShowAddModal(true)}>

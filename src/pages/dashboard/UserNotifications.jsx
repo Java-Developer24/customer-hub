@@ -42,7 +42,7 @@ const UserNotifications = () => {
         <div>
           <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
           <p className="text-muted-foreground">
-            Stay updated with your account activity
+            Stay updated with your CloudHost account activity
           </p>
         </div>
         <div className="flex gap-2">
