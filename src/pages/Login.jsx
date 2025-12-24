@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { HeroBackground, FloatingParticles } from '@/components/effects/AnimatedBackground';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -36,7 +38,6 @@ const Login = () => {
     const result = await login(email, password);
     
     if (result.success) {
-      // Show OTP modal
       setShowOTP(true);
     }
   };
@@ -48,7 +49,6 @@ const Login = () => {
         description: "Login successful",
       });
       
-      // Check if admin
       if (email.includes('admin')) {
         navigate('/admin');
       } else {
@@ -66,10 +66,15 @@ const Login = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-background via-card to-background">
-        <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-20" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <HeroBackground variant="hero" />
+        
+        {/* Floating orbs */}
+        <div className="orb orb-primary w-96 h-96 top-1/4 left-1/4" style={{ animationDelay: '0s' }} />
+        <div className="orb orb-accent w-80 h-80 bottom-1/4 right-1/4" style={{ animationDelay: '2s' }} />
+        <div className="orb orb-pink w-64 h-64 top-1/2 right-1/3" style={{ animationDelay: '4s' }} />
+        
+        <FloatingParticles count={40} />
         
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12">
           <motion.div
@@ -78,25 +83,60 @@ const Login = () => {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-                <Sparkles className="w-6 h-6 text-primary-foreground" />
+            <motion.div 
+              className="flex items-center justify-center gap-3 mb-8"
+              whileHover={{ scale: 1.02 }}
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg glow animate-pulse-slow">
+                <Sparkles className="w-7 h-7 text-primary-foreground" />
               </div>
-              <span className="text-3xl font-bold text-foreground">SaaSPlatform</span>
-            </div>
-            <h1 className="text-4xl font-bold mb-4 text-foreground">
+              <span className="text-3xl font-bold text-gradient-primary">SaaSPlatform</span>
+            </motion.div>
+            
+            <h1 className="text-5xl font-black mb-6 text-foreground leading-tight">
               Manage Your Business
-              <span className="block gradient-text">With Confidence</span>
+              <span className="block text-gradient-primary mt-2">With Confidence</span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-md">
+            
+            <p className="text-muted-foreground text-lg max-w-md leading-relaxed">
               Powerful subscription management, CRM, and analytics all in one platform.
             </p>
+            
+            {/* Floating stats cards */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="mt-12 flex gap-4 justify-center"
+            >
+              <motion.div 
+                className="glass-card p-4 rounded-xl"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <p className="text-2xl font-bold text-gradient-primary">10K+</p>
+                <p className="text-sm text-muted-foreground">Active Users</p>
+              </motion.div>
+              <motion.div 
+                className="glass-card p-4 rounded-xl"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              >
+                <p className="text-2xl font-bold text-gradient-primary">99.9%</p>
+                <p className="text-sm text-muted-foreground">Uptime</p>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background relative">
+        {/* Theme Toggle */}
+        <div className="absolute top-4 right-4">
+          <ThemeToggle variant="minimal" />
+        </div>
+        
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -112,35 +152,35 @@ const Login = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <div className="relative group">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-secondary border-border focus:border-primary"
+                    className="pl-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <div className="relative group">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 bg-secondary border-border focus:border-primary"
+                    className="pl-10 pr-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -166,7 +206,7 @@ const Login = () => {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full"
+                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 glow transition-all"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -196,7 +236,7 @@ const Login = () => {
               className="space-y-6"
             >
               <div className="text-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 glow-soft">
                   <Mail className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Check your email</h3>
@@ -213,7 +253,7 @@ const Login = () => {
                   placeholder="000000"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="h-12 text-center text-2xl tracking-widest bg-secondary border-border"
+                  className="h-14 text-center text-2xl tracking-[0.5em] font-mono glass-subtle border-border/50"
                   maxLength={6}
                 />
               </div>
@@ -221,14 +261,14 @@ const Login = () => {
               <Button
                 onClick={handleOTPVerify}
                 size="lg"
-                className="w-full"
+                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 glow"
               >
                 Verify & Continue
               </Button>
 
               <button
                 onClick={() => setShowOTP(false)}
-                className="w-full text-center text-muted-foreground hover:text-foreground text-sm"
+                className="w-full text-center text-muted-foreground hover:text-foreground text-sm transition-colors"
               >
                 ← Back to login
               </button>
