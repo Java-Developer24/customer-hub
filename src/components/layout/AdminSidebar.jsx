@@ -30,7 +30,8 @@ const menuItems = [
   { icon: Globe, label: 'Regions', path: '/admin/regions' },
   { icon: Mail, label: 'Notifications', path: '/admin/notifications' },
   { icon: Ticket, label: 'Tickets', path: '/admin/tickets' },
-  { icon: BarChart3, label: 'Analytics', path: '/admin/analytics' },
+  { icon: Users, label: 'Impersonation Logs', path: '/admin/impersonation-logs' },
+  { icon: BarChart3, label: 'Audit Logs', path: '/admin/audit-logs' },
   { icon: Settings, label: 'Settings', path: '/admin/settings' },
 ];
 
