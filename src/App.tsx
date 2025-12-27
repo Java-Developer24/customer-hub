@@ -2,13 +2,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { ImpersonationProvider } from "./contexts/ImpersonationContext";
 import ImpersonationBanner from "./components/admin/ImpersonationBanner";
 import ImpersonationActivityPanel from "./components/admin/ImpersonationActivityPanel";
 import Chatbot from "./components/Chatbot";
+import { AnimatePresence, motion } from "framer-motion";
 
 // Marketplace Pages
 import Index from "./pages/Index";
@@ -77,67 +78,92 @@ const ProtectedRoute = ({ children, adminOnly = false }: { children: React.React
   return <>{children}</>;
 };
 
-const AppRoutes = () => {
+const pageVariants = {
+  initial: { opacity: 0, y: 12 },
+  in: { opacity: 1, y: 0 },
+  out: { opacity: 0, y: -8 },
+};
+
+const pageTransition = {
+  type: 'tween' as const,
+  ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
+  duration: 0.35,
+};
+
+const AnimatedRoutes = () => {
+  const location = useLocation();
   const { isAuthenticated, isAdmin } = useAuth();
 
   return (
-    <Routes>
-      {/* Public Marketplace Routes */}
-      <Route path="/" element={<Index />} />
-      <Route path="/products" element={<ProductCatalog />} />
-      <Route path="/products/:categoryId" element={<ProductCatalog />} />
-      <Route path="/marketplace/product/:productId" element={<ProductDetails />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/checkout" element={<Checkout />} />
-      
-      {/* Marketing Pages */}
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/pricing" element={<Pricing />} />
-      <Route path="/solutions/:solutionId" element={<Solutions />} />
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/blog/:slug" element={<BlogPost />} />
-      <Route path="/help" element={<HelpCenter />} />
-      <Route path="/resources" element={<Resources />} />
-      
-      {/* Product Pages */}
-      <Route path="/product/:productId" element={<ProductPage />} />
-      
-      {/* Auth Routes */}
-      <Route path="/login" element={isAuthenticated ? <Navigate to={isAdmin ? "/admin" : "/dashboard"} /> : <Login />} />
-      <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
-      
-      {/* User Dashboard Routes */}
-      <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-        <Route index element={<UserDashboard />} />
-        <Route path="products" element={<UserProducts />} />
-        <Route path="subscriptions" element={<UserSubscriptions />} />
-        <Route path="orders" element={<UserOrders />} />
-        <Route path="payments" element={<UserPaymentHistory />} />
-        <Route path="notifications" element={<UserNotifications />} />
-        <Route path="support" element={<UserSupport />} />
-        <Route path="settings" element={<UserSettings />} />
-      </Route>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial="initial"
+        animate="in"
+        exit="out"
+        variants={pageVariants}
+        transition={pageTransition}
+        className="w-full min-h-screen"
+      >
+        <Routes location={location}>
+          {/* Public Marketplace Routes */}
+          <Route path="/" element={<Index />} />
+          <Route path="/products" element={<ProductCatalog />} />
+          <Route path="/products/:categoryId" element={<ProductCatalog />} />
+          <Route path="/marketplace/product/:productId" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          
+          {/* Marketing Pages */}
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/solutions/:solutionId" element={<Solutions />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/help" element={<HelpCenter />} />
+          <Route path="/resources" element={<Resources />} />
+          
+          {/* Product Pages */}
+          <Route path="/product/:productId" element={<ProductPage />} />
+          
+          {/* Auth Routes */}
+          <Route path="/login" element={isAuthenticated ? <Navigate to={isAdmin ? "/admin" : "/dashboard"} /> : <Login />} />
+          <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
+          
+          {/* User Dashboard Routes */}
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+            <Route index element={<UserDashboard />} />
+            <Route path="products" element={<UserProducts />} />
+            <Route path="subscriptions" element={<UserSubscriptions />} />
+            <Route path="orders" element={<UserOrders />} />
+            <Route path="payments" element={<UserPaymentHistory />} />
+            <Route path="notifications" element={<UserNotifications />} />
+            <Route path="support" element={<UserSupport />} />
+            <Route path="settings" element={<UserSettings />} />
+          </Route>
 
-      {/* Admin Routes */}
-      <Route path="/admin" element={<ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>}>
-        <Route index element={<AdminDashboard />} />
-        <Route path="customers" element={<CustomerManagement />} />
-        <Route path="customers/:customerId" element={<CustomerDetails />} />
-        <Route path="products" element={<ProductManagement />} />
-        <Route path="orders" element={<AdminOrders />} />
-        <Route path="payments" element={<AdminPayments />} />
-        <Route path="notifications" element={<AdminNotificationLogs />} />
-        <Route path="tickets" element={<TicketManagement />} />
-        <Route path="regions" element={<RegionManagement />} />
-        <Route path="emails" element={<EmailManagement />} />
-        <Route path="impersonation-logs" element={<ImpersonationLogs />} />
-        <Route path="audit-logs" element={<AdminAuditLogs />} />
-        <Route path="settings" element={<AdminSettings />} />
-      </Route>
+          {/* Admin Routes */}
+          <Route path="/admin" element={<ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="customers" element={<CustomerManagement />} />
+            <Route path="customers/:customerId" element={<CustomerDetails />} />
+            <Route path="products" element={<ProductManagement />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="payments" element={<AdminPayments />} />
+            <Route path="notifications" element={<AdminNotificationLogs />} />
+            <Route path="tickets" element={<TicketManagement />} />
+            <Route path="regions" element={<RegionManagement />} />
+            <Route path="emails" element={<EmailManagement />} />
+            <Route path="impersonation-logs" element={<ImpersonationLogs />} />
+            <Route path="audit-logs" element={<AdminAuditLogs />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
 
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
@@ -152,7 +178,7 @@ const App = () => (
               <Sonner />
               <ImpersonationBanner />
               <ImpersonationActivityPanel />
-              <AppRoutes />
+              <AnimatedRoutes />
               <Chatbot />
             </TooltipProvider>
           </ImpersonationProvider>
