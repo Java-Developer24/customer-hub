@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import UserSidebar from './UserSidebar';
 import { cn } from '@/lib/utils';
 import { useImpersonation } from '@/contexts/ImpersonationContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const DashboardLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -32,6 +33,13 @@ const DashboardLayout = () => {
           sidebarCollapsed ? "ml-16" : "ml-64"
         )}
       >
+        {/* Top Bar with Theme Toggle */}
+        <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border/50">
+          <div className="flex items-center justify-end px-6 py-3">
+            <ThemeToggle variant="minimal" />
+          </div>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

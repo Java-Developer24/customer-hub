@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import AdminSidebar from './AdminSidebar';
 import CustomerSearchAutocomplete from '@/components/admin/CustomerSearchAutocomplete';
 import { cn } from '@/lib/utils';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const AdminLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -21,14 +22,15 @@ const AdminLayout = () => {
           sidebarCollapsed ? "ml-16" : "ml-64"
         )}
       >
-        {/* Top Bar with Search */}
-        <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border">
+        {/* Top Bar with Search and Theme Toggle */}
+        <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border/50">
           <div className="flex items-center justify-between px-6 py-3">
             <div className="flex-1 max-w-md">
               <CustomerSearchAutocomplete 
                 placeholder="Quick search customers (name, email, ID)..."
               />
             </div>
+            <ThemeToggle variant="minimal" />
           </div>
         </div>
 

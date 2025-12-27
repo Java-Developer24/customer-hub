@@ -229,11 +229,33 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        {/* Background Effects */}
+        {/* Aurora Background Effects */}
         <div className="absolute inset-0 mesh-gradient" />
         <div className="absolute inset-0 grid-overlay opacity-30" />
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-accent/10 rounded-full blur-[120px]" />
+        
+        {/* Aurora waves */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-[800px] h-[600px] bg-gradient-to-br from-primary/30 via-purple-500/20 to-transparent rounded-full blur-[120px] animate-float opacity-60" />
+          <div className="absolute top-1/3 right-0 w-[600px] h-[500px] bg-gradient-to-bl from-accent/25 via-cyan-400/15 to-transparent rounded-full blur-[100px] animate-float" style={{ animationDelay: '-5s' }} />
+          <div className="absolute bottom-0 left-0 w-[700px] h-[400px] bg-gradient-to-tr from-pink-500/20 via-purple-400/15 to-transparent rounded-full blur-[120px] animate-float" style={{ animationDelay: '-10s' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-blue-500/15 via-cyan-300/10 to-transparent rounded-full blur-[100px] animate-pulse-slow" />
+        </div>
+
+        {/* Floating particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-primary/40 rounded-full animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 10}s`,
+                animationDuration: `${15 + Math.random() * 10}s`,
+              }}
+            />
+          ))}
+        </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -392,9 +414,10 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Statistics Bar */}
-      <section className="relative py-16 border-y border-border/50">
+      {/* Statistics Bar - Enhanced with Glassmorphism */}
+      <section className="relative py-20 border-y border-border/50">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
+        <div className="absolute inset-0 mesh-gradient opacity-50" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -691,7 +714,7 @@ const Index = () => {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto pt-6">
             {pricingPlans.map((plan, index) => (
               <motion.div
                 key={plan.name}
@@ -699,10 +722,10 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className={`glass-card rounded-2xl p-8 ${plan.popular ? 'ring-2 ring-primary glow relative' : ''}`}
+                className={`relative overflow-visible glass-card rounded-2xl p-8 ${plan.popular ? 'ring-2 ring-primary glow' : ''}`}
               >
                 {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
+                  <Badge className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground shadow-lg z-10">
                     Most Popular
                   </Badge>
                 )}

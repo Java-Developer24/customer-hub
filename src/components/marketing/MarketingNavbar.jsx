@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const products = [
   { name: 'Web Hosting', icon: Server, href: '/product/web-hosting', desc: 'Fast & reliable hosting' },
@@ -256,6 +257,9 @@ const MarketingNavbar = () => {
 
           {/* Right Side */}
           <div className="hidden lg:flex items-center gap-3">
+            {/* Theme Toggle */}
+            <ThemeToggle variant="minimal" />
+            
             {/* Search */}
             <div ref={searchRef} className="relative">
               <button 
