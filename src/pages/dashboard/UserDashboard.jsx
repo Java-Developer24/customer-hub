@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Package,
@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { sampleUserProducts, sampleSubscriptions } from '@/data/cloudhost-products';
+import { SkeletonStats, SkeletonCard } from '@/components/ui/Skeleton';
 
 const iconMap = {
   'web-hosting': Server,
@@ -71,6 +72,13 @@ const notifications = [
 
 const UserDashboard = () => {
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading
+    const timer = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   const getStatusBadge = (status) => {
     const variants = {
@@ -89,6 +97,31 @@ const UserDashboard = () => {
     };
     return icons[type] || icons.info;
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6 relative">
+        <div className="orb orb-primary w-96 h-96 -top-48 -left-48 opacity-30" />
+        <div className="orb orb-accent w-64 h-64 top-1/2 -right-32 opacity-20" />
+        
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="space-y-2">
+            <div className="h-8 w-64 bg-muted/50 rounded-lg animate-pulse" />
+            <div className="h-4 w-48 bg-muted/30 rounded animate-pulse" />
+          </div>
+        </div>
+        
+        <SkeletonStats count={4} />
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <SkeletonCard lines={4} showHeader />
+          </div>
+          <SkeletonCard lines={3} showHeader />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 relative">

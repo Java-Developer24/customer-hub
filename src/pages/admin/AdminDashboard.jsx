@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -48,11 +48,18 @@ import {
   expiringSubscriptions,
   recentAdminOrders
 } from '@/data/admin-dashboard-data';
+import { SkeletonStats, SkeletonCard, SkeletonTable } from '@/components/ui/Skeleton';
 
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--warning))', 'hsl(var(--success))'];
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const stats = [
     {
@@ -111,6 +118,42 @@ const AdminDashboard = () => {
     };
     return variants[status] || variants.pending;
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6 relative overflow-hidden">
+        <div className="absolute inset-0 mesh-gradient opacity-50 pointer-events-none" />
+        <div className="orb orb-primary w-[500px] h-[500px] -top-64 -right-64 opacity-20" />
+        
+        <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="space-y-2">
+            <div className="h-8 w-72 bg-muted/50 rounded-lg animate-pulse" />
+            <div className="h-4 w-56 bg-muted/30 rounded animate-pulse" />
+          </div>
+        </div>
+        
+        <SkeletonStats count={4} />
+        
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="glass-card rounded-xl p-4 animate-pulse">
+              <div className="h-6 w-12 bg-muted/40 rounded mb-2" />
+              <div className="h-3 w-20 bg-muted/30 rounded" />
+            </div>
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <SkeletonCard lines={6} showHeader />
+          </div>
+          <SkeletonCard lines={4} showHeader />
+        </div>
+        
+        <SkeletonTable rows={5} columns={5} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 relative overflow-hidden">
