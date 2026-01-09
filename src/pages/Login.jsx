@@ -10,14 +10,20 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { HeroBackground, FloatingParticles } from '@/components/effects/AnimatedBackground';
 import ThemeToggle from '@/components/ui/ThemeToggle';
+import { z } from 'zod';
+
+// Input validation schema
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [showOTP, setShowOTP] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [errors, setErrors] = useState({});
   
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -25,39 +31,32 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
     
-    if (!email || !password) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive",
+    // Validate inputs
+    const validation = loginSchema.safeParse({ email, password });
+    if (!validation.success) {
+      const fieldErrors = {};
+      validation.error.errors.forEach((err) => {
+        fieldErrors[err.path[0]] = err.message;
       });
+      setErrors(fieldErrors);
       return;
     }
 
     const result = await login(email, password);
     
     if (result.success) {
-      setShowOTP(true);
-    }
-  };
-
-  const handleOTPVerify = () => {
-    if (otp.length === 6) {
       toast({
         title: "Welcome back!",
         description: "Login successful",
       });
-      
-      if (email.includes('admin')) {
-        navigate('/admin');
-      } else {
-        navigate('/dashboard');
-      }
+      // Navigation will be handled by the route guard based on role
+      // The onAuthStateChange will update the auth state
     } else {
       toast({
-        title: "Invalid OTP",
-        description: "Please enter a valid 6-digit code",
+        title: "Login failed",
+        description: result.error || "Invalid email or password",
         variant: "destructive",
       });
     }
@@ -148,132 +147,92 @@ const Login = () => {
             <p className="text-muted-foreground">Enter your credentials to access your account</p>
           </div>
 
-          {!showOTP ? (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative group">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative group">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="remember"
-                    checked={rememberMe}
-                    onCheckedChange={setRememberMe}
-                  />
-                  <Label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
-                    Remember me
-                  </Label>
-                </div>
-                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
-
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 glow transition-all"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <span className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    Signing in...
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    Sign in
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
-                )}
-              </Button>
-
-              <div className="text-center">
-                <span className="text-muted-foreground">Don't have an account? </span>
-                <Link to="/register" className="text-primary hover:underline font-medium">
-                  Sign up
-                </Link>
-              </div>
-            </form>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="space-y-6"
-            >
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 glow-soft">
-                  <Mail className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">Check your email</h3>
-                <p className="text-muted-foreground">
-                  We've sent a 6-digit verification code to {email}
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="otp">Verification Code</Label>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="relative group">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
-                  id="otp"
-                  type="text"
-                  placeholder="000000"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="h-14 text-center text-2xl tracking-[0.5em] font-mono glass-subtle border-border/50"
-                  maxLength={6}
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={`pl-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all ${errors.email ? 'border-destructive' : ''}`}
                 />
               </div>
+              {errors.email && (
+                <p className="text-xs text-destructive">{errors.email}</p>
+              )}
+            </div>
 
-              <Button
-                onClick={handleOTPVerify}
-                size="lg"
-                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 glow"
-              >
-                Verify & Continue
-              </Button>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative group">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                <Input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`pl-10 pr-10 h-12 glass-subtle border-border/50 focus:border-primary focus:glow-soft transition-all ${errors.password ? 'border-destructive' : ''}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-xs text-destructive">{errors.password}</p>
+              )}
+            </div>
 
-              <button
-                onClick={() => setShowOTP(false)}
-                className="w-full text-center text-muted-foreground hover:text-foreground text-sm transition-colors"
-              >
-                ← Back to login
-              </button>
-            </motion.div>
-          )}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="remember"
+                  checked={rememberMe}
+                  onCheckedChange={setRememberMe}
+                />
+                <Label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
+                  Remember me
+                </Label>
+              </div>
+              <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                Forgot password?
+              </Link>
+            </div>
+
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 glow transition-all"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  Signing in...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  Sign in
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              )}
+            </Button>
+
+            <div className="text-center">
+              <span className="text-muted-foreground">Don't have an account? </span>
+              <Link to="/register" className="text-primary hover:underline font-medium">
+                Sign up
+              </Link>
+            </div>
+          </form>
 
           <p className="text-xs text-muted-foreground text-center mt-8">
             By signing in, you agree to our Terms of Service and Privacy Policy
