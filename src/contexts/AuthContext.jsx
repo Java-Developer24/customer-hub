@@ -28,12 +28,12 @@ export const AuthProvider = ({ children }) => {
         .single();
 
       if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching profile:', error);
+        // Profile fetch error - return null silently
         return null;
       }
       return data;
     } catch (err) {
-      console.error('Error in fetchProfile:', err);
+      // Unexpected error - return null silently
       return null;
     }
   };
@@ -45,12 +45,12 @@ export const AuthProvider = ({ children }) => {
         .rpc('get_user_role', { _user_id: userId });
 
       if (error) {
-        console.error('Error fetching user role:', error);
-        return 'customer'; // Default to customer if role fetch fails
+        // Role fetch error - default to customer role
+        return 'customer';
       }
       return data || 'customer';
     } catch (err) {
-      console.error('Error in fetchUserRole:', err);
+      // Unexpected error - default to customer role
       return 'customer';
     }
   };
@@ -154,16 +154,17 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Logout error:', error);
-      }
+      await supabase.auth.signOut();
       setUser(null);
       setSession(null);
       setProfile(null);
       setUserRole(null);
     } catch (err) {
-      console.error('Logout error:', err);
+      // Logout error - still clear local state
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      setUserRole(null);
     } finally {
       setIsLoading(false);
     }
